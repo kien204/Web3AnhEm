@@ -23,5 +23,5 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.use(ConfirmationService);
-
+app.config.devtools = true;
 app.mount('#app');
