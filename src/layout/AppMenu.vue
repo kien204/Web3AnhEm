@@ -45,7 +45,7 @@ const model = ref([
             {
                 label: 'Quản lý',
                 icon: 'pi pi-money-bill',
-                 to: ''
+                 to: '/auth/login'
             },
             
         ]

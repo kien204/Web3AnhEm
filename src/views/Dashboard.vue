@@ -52,7 +52,7 @@ const items = ref([
 <template>
     <div class="flex gap-4">
         <div class="card">
-            <div class="font-semibold text-xl mb-4">Recent Sales</div>
+            <div class="font-semibold text-xl mb-4">Truyện mới nhất</div>
             <DataView :value="items">
                 <template #list="slotProps">
                     <div class="grid grid-cols-9 gap-4">

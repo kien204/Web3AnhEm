@@ -1,13 +1,27 @@
 <script setup>
 import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
 import { ref } from 'vue';
-
+import { useToast } from 'primevue/usetoast';
+const toast = useToast();
 const email = ref('');
 const password = ref('');
 const checked = ref(false);
+
+const show = (check, statu, content) => {
+    toast.add({ severity: check, summary: statu, detail: content, life: 3000 });
+};
+
+const login = () => {
+    if (email.value == 'admin' && password.value == 'admin') {
+        show('success', 'Thành công', 'Đăng nhập thành công');
+    } else {
+        show('error', 'Thất bại', 'Đăng nhập thất bại');
+    }
+};
 </script>
 
 <template>
+    <Toast />
     <FloatingConfigurator />
     <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
         <div class="flex flex-col items-center justify-center">
@@ -49,7 +63,7 @@ const checked = ref(false);
                             </div>
                             <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                         </div>
-                        <Button label="Sign In" class="w-full" as="router-link" to="/"></Button>
+                        <Button label="Sign In" class="w-full" as="router-link" @click="login()"></Button>
                     </div>
                 </div>
             </div>
