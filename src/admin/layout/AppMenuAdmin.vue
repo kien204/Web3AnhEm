@@ -8,14 +8,9 @@ const model = ref([
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Các truyện đã đăng',
-                icon: 'pi pi-list',
-                to: '/auth/login'
-            },
-            {
-                label: 'Thêm, sửa, xóa truyện',
+                label: 'Chinh sửa truyện',
                 icon: 'pi pi-cog',
-                to: '/auth/login'
+                to: '/view/quanlytruyen'
             }
         ]
     },
@@ -24,14 +19,9 @@ const model = ref([
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Các chap đã đăng',
-                icon: 'pi pi-list',
-                to: '/auth/login'
-            },
-            {
-                label: 'Thêm, sửa, xóa chap',
+                label: 'Chinh sửa chap',
                 icon: 'pi pi-cog',
-                to: '/auth/login'
+                to: '/view/quanlychap'
             }
         ]
     },
@@ -40,14 +30,9 @@ const model = ref([
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Danh sách các thể loại',
-                icon: 'pi pi-list',
-                to: '/auth/login'
-            },
-            {
-                label: 'Thêm, sửa, xóa thể loại',
+                label: 'Chinh sửa thể loại',
                 icon: 'pi pi-cog',
-                to: '/auth/login'
+                to: '/view/quanlytheloai'
             }
         ]
     },

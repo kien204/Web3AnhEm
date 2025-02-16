@@ -30,7 +30,7 @@ const { toggleMenu } = useLayout();
                     </g>
                 </svg>
 
-                <span>SAKAI</span>
+                <span>Quản lý ADMIN</span>
             </router-link>
         </div>
     </div>

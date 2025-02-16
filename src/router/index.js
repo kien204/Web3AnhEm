@@ -1,6 +1,6 @@
     import HomeAdmin from '@/admin/layout/HomeAdmin.vue';
-    import AppLayout from '@/layout/AppLayout.vue';
-    import { createRouter, createWebHistory } from 'vue-router';
+import AppLayout from '@/layout/AppLayout.vue';
+import { createRouter, createWebHistory } from 'vue-router';
 
     const router = createRouter({
         history: createWebHistory(),
@@ -45,12 +45,27 @@
                     path: '/view/home', 
                     name: 'homeadmin',
                     component: HomeAdmin,
-                    redirect: { name: 'thongke' },
+                    redirect: { name: 'quanlytruyen' },
                     children: [
                         {
                             path: '/view/thongke',
                             name: 'thongke',
                             component: () => import('@/admin/view/ThongKe.vue')
+                        },
+                        {
+                            path: '/view/quanlytruyen',
+                            name: 'quanlytruyen',
+                            component: () => import('@/admin/view/QuanLyTruyen.vue')
+                        },
+                        {
+                            path: '/view/quanlychap',
+                            name: 'quanlychap',
+                            component: () => import('@/admin/view/QuanLyChap.vue')
+                        },
+                        {
+                            path: '/view/quanlytheloai',
+                            name: 'quanlytheloai',
+                            component: () => import('@/admin/view/QuanLyTheLoai.vue')
                         }
                     ]
                 }   

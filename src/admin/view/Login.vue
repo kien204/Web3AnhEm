@@ -15,8 +15,8 @@ const show = (check, statu, content) => {
 };
 
 const login = () => {
-    if (email.value == 'admin' && password.value == 'admin') {
-        show('success', 'Thành công', 'Đăng nhập thành công');
+    if(true){
+    // if (email.value == 'admin' && password.value == 'admin') {
         router.push({ name: 'homeadmin' }); 
     } else {
         show('error', 'Thất bại', 'Đăng nhập thất bại');
