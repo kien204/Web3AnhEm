@@ -1,37 +1,92 @@
 <script setup>
 import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
+import axios from 'axios';
 
 const truyenList = ref([]);
-const newTruyen = ref({ ten: '', theLoai: '', moTa: '', file: null });
-const editTruyen = ref({ id: '', ten: '', theLoai: '', moTa: '', file: null });
+const newTruyen = ref({
+    storyName: '',
+    storyCode: '',
+    storyAuthor: '',
+    coverImage: '',
+    description: '',
+    typeStory: '',
+    typeDetailStory: ''
+});
+const editTruyen = ref({
+    id: '',
+    storyName: '',
+    storyCode: '',
+    storyAuthor: '',
+    coverImage: '',
+    description: '',
+    typeStory: '',
+    typeDetailStory: ''
+});
 const deleteTruyenId = ref('');
 const toast = useToast();
+const apiUrl = 'http://10.15.89.56:5041/api/Story';
 
 const show = (check, statu, content) => {
     toast.add({ severity: check, summary: statu, detail: content, life: 3000 });
 };
 
-const addTruyen = () => {
-    const newId = truyenList.value.length + 1;
-    truyenList.value.push({ id: newId, ...newTruyen.value });
-    newTruyen.value = { ten: '', theLoai: '', moTa: '', file: null };
-    show('success', 'Thành công', 'Thêm truyện thành công');
-};
-
-const updateTruyen = () => {
-    const index = truyenList.value.findIndex((truyen) => truyen.id === parseInt(editTruyen.value.id));
-    if (index !== -1) {
-        truyenList.value[index] = { ...editTruyen.value };
-        editTruyen.value = { id: '', ten: '', theLoai: '', moTa: '', file: null };
-        show('success', 'Thành công', 'SửaSửa truyện thành công');  
+const addTruyen = async () => {
+    try {
+        let token = localStorage.getItem('token');
+        await axios.post(`${apiUrl}/inserts`, newTruyen.value, {
+            headers: {
+                'Authorization': `Bearer ${token}`, // Đính kèm token
+                'Content-Type': 'application/json'  // Đảm bảo đúng định dạng JSON
+            }
+        });
+        newTruyen.value = {
+            storyName: '',
+            storyCode: '',
+            storyAuthor: '',
+            coverImage: '',
+            description: '',
+            typeStory: '',
+            typeDetailStory: '',
+        };
+        show('success', 'Thành công', 'Thêm truyện thành công');
+    } catch (error) {
+        show('error', 'Lỗi', 'Có lỗi xảy ra khi thêm truyện');
+        console.error('Error adding data:', error);
     }
 };
 
-const deleteTruyen = () => {
+const updateTruyen = async () => {
+    try {
+        await axios.put(`${apiUrl}/${editTruyen.value.id}`, editTruyen.value);
+        editTruyen.value = {
+            id: '',
+            storyName: '',
+            storyCode: '',
+            storyAuthor: '',
+            coverImage: '',
+            description: '',
+            typeStory: '',
+            typeDetailStory: ''
+        };
+        show('success', 'Thành công', 'Sửa truyện thành công');
+    } catch (error) {
+        show('error', 'Lỗi', 'Có lỗi xảy ra khi sửa truyện');
+        console.error('Error updating data:', error);
+    }
+};
+
+const deleteTruyen = async () => {
     if (confirm('Bạn có chắc chắn muốn xóa truyện này không?')) {
-        truyenList.value = truyenList.value.filter((truyen) => truyen.id !== parseInt(deleteTruyenId.value));
-        deleteTruyenId.value = '';
+        try {
+            await axios.delete(`${apiUrl}/delete-story/${deleteTruyenId.value}`);
+            truyenList.value = truyenList.value.filter((truyen) => truyen.id !== parseInt(deleteTruyenId.value));
+            deleteTruyenId.value = '';
+            show('success', 'Thành công', 'Xóa truyện thành công');
+        } catch (error) {
+            show('error', 'Lỗi', 'Có lỗi xảy ra khi xóa truyện');
+            console.error('Error deleting data:', error);
+        }
     }
 };
 </script>
@@ -40,16 +95,32 @@ const deleteTruyen = () => {
     <div class="p-4 surface-card shadow-2 border-round mx-auto" style="width: 70%">
         <h2 class="text-2xl font-bold mb-4 text-center">Thêm Truyện</h2>
         <div class="field mb-4">
-            <label class="block text-900 font-medium mb-2">Tên:</label>
-            <input v-model="newTruyen.ten" type="text" class="inputfield w-full" />
+            <label class="block text-900 font-medium mb-2">Tên Truyện:</label>
+            <input v-model="newTruyen.storyName" type="text" class="inputfield w-full" />
         </div>
         <div class="field mb-4">
-            <label class="block text-900 font-medium mb-2">Thể Loại:</label>
-            <input v-model="newTruyen.theLoai" type="text" class="inputfield w-full" />
+            <label class="block text-900 font-medium mb-2">Mã Truyện:</label>
+            <input v-model="newTruyen.storyCode" type="text" class="inputfield w-full" />
+        </div>
+        <div class="field mb-4">
+            <label class="block text-900 font-medium mb-2">Tác Giả:</label>
+            <input v-model="newTruyen.storyAuthor" type="text" class="inputfield w-full" />
+        </div>
+        <div class="field mb-4">
+            <label class="block text-900 font-medium mb-2">Ảnh Bìa:</label>
+            <input v-model="newTruyen.coverImage" type="text" class="inputfield w-full" />
         </div>
         <div class="field mb-4">
             <label class="block text-900 font-medium mb-2">Mô Tả:</label>
-            <textarea v-model="newTruyen.moTa" rows="4" class="inputfield w-full"></textarea>
+            <textarea v-model="newTruyen.description" rows="4" class="inputfield w-full"></textarea>
+        </div>
+        <div class="field mb-4">
+            <label class="block text-900 font-medium mb-2">Thể Loại:</label>
+            <input v-model="newTruyen.typeStory" type="text" class="inputfield w-full" />
+        </div>
+        <div class="field mb-4">
+            <label class="block text-900 font-medium mb-2">Chi Tiết Thể Loại:</label>
+            <input v-model="newTruyen.typeDetailStory" type="text" class="inputfield w-full" />
         </div>
         <div class="text-center">
             <button @click="addTruyen" class="p-button p-component p-button-success bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-800">Thêm</button>
@@ -61,16 +132,32 @@ const deleteTruyen = () => {
             <input v-model="editTruyen.id" type="text" class="inputfield w-full" />
         </div>
         <div class="field mb-4">
-            <label class="block text-900 font-medium mb-2">Tên:</label>
-            <input v-model="editTruyen.ten" type="text" class="inputfield w-full" />
+            <label class="block text-900 font-medium mb-2">Tên Truyện:</label>
+            <input v-model="editTruyen.storyName" type="text" class="inputfield w-full" />
         </div>
         <div class="field mb-4">
-            <label class="block text-900 font-medium mb-2">Thể Loại:</label>
-            <input v-model="editTruyen.theLoai" type="text" class="inputfield w-full" />
+            <label class="block text-900 font-medium mb-2">Mã Truyện:</label>
+            <input v-model="editTruyen.storyCode" type="text" class="inputfield w-full" />
+        </div>
+        <div class="field mb-4">
+            <label class="block text-900 font-medium mb-2">Tác Giả:</label>
+            <input v-model="editTruyen.storyAuthor" type="text" class="inputfield w-full" />
+        </div>
+        <div class="field mb-4">
+            <label class="block text-900 font-medium mb-2">Ảnh Bìa:</label>
+            <input v-model="editTruyen.coverImage" type="text" class="inputfield w-full" />
         </div>
         <div class="field mb-4">
             <label class="block text-900 font-medium mb-2">Mô Tả:</label>
-            <textarea v-model="editTruyen.moTa" rows="4" class="inputfield w-full"></textarea>
+            <textarea v-model="editTruyen.description" rows="4" class="inputfield w-full"></textarea>
+        </div>
+        <div class="field mb-4">
+            <label class="block text-900 font-medium mb-2">Thể Loại:</label>
+            <input v-model="editTruyen.typeStory" type="text" class="inputfield w-full" />
+        </div>
+        <div class="field mb-4">
+            <label class="block text-900 font-medium mb-2">Chi Tiết Thể Loại:</label>
+            <input v-model="editTruyen.typeDetailStory" type="text" class="inputfield w-full" />
         </div>
         <div class="text-center">
             <button @click="updateTruyen" class="p-button p-component p-button-success bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-900">Sửa</button>

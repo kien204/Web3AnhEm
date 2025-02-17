@@ -75,7 +75,7 @@ const handleDragOver = (event) => {
             </div>
         </div>
         <div class="text-center">
-            <button @click="addTruyen" class="p-button p-component p-button-success">Thêm</button>
+            <button @click="addTruyen" class="p-button p-component p-button-danger bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-800">Thêm</button>
         </div>
 
         <h2 class="text-2xl font-bold mt-20 mb-4 text-center">Sửa Truyện</h2>
@@ -104,7 +104,7 @@ const handleDragOver = (event) => {
             </div>
         </div>
         <div class="text-center">
-            <button @click="updateTruyen" class="p-button p-component p-button-warning">Sửa</button>
+            <button @click="updateTruyen" class="p-button p-component p-button-danger bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-800">Sửa</button>
         </div>
 
         <h2 class="text-2xl font-bold mt-20 mb-4 text-center">Xóa Truyện</h2>
@@ -113,7 +113,7 @@ const handleDragOver = (event) => {
             <input v-model="deleteTruyenId" type="text" class="inputfield w-full" />
         </div>
         <div class="text-center">
-            <button @click="deleteTruyen" class="p-button p-component p-button-danger">Xóa</button>
+            <button @click="deleteTruyen" class="p-button p-component p-button-danger bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-800">Xóa</button>
         </div>
     </div>
 </template>

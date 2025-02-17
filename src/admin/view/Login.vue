@@ -3,21 +3,33 @@ import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
 import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router';
-    
+
+import axios from 'axios';
 const toast = useToast();
 const router = useRouter();
 const email = ref('');
 const password = ref('');
 const checked = ref(false);
+const token = ref('');
+// http://10.15.89.56:5041/api/Login/login
 
 const show = (check, statu, content) => {
     toast.add({ severity: check, summary: statu, detail: content, life: 3000 });
 };
 
-const login = () => {
-    if(true){
-    // if (email.value == 'admin' && password.value == 'admin') {
-        router.push({ name: 'homeadmin' }); 
+const login = async () => {
+    if (true) {
+        // if (email.value == 'admin' && password.value == 'admin') {
+        router.push({ name: 'homeadmin' });
+        try {
+            let res = await axios.post(`http://10.15.89.56:5041/api/Login/login`, {
+                userName: email.value,
+                pass: password.value
+            });
+            await localStorage.setItem('token', JSON.stringify(await res.data.token));
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     } else {
         show('error', 'Thất bại', 'Đăng nhập thất bại');
     }
