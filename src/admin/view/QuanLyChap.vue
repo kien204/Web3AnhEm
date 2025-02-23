@@ -1,5 +1,9 @@
+<script setup>
+    import { ref } from 'vue';
+    import SuaChap from '@/admin/uikit/SuaChap.vue';
+</script>
 <template>
     <div>
-        <h1>Thống kê</h1>
+        <SuaChap />
     </div>
 </template>

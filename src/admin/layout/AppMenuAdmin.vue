@@ -8,18 +8,18 @@ const model = ref([
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Chinh sửa truyện',
+                label: 'Chỉnh sửa truyện',
                 icon: 'pi pi-cog',
                 to: '/view/quanlytruyen'
             }
         ]
     },
     {
-        label: 'Quản lý chap',
+        label: 'Quản lý chương',
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Chinh sửa chap',
+                label: 'Chỉnh sửa chương',
                 icon: 'pi pi-cog',
                 to: '/view/quanlychap'
             }
@@ -30,7 +30,7 @@ const model = ref([
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Chinh sửa thể loại',
+                label: 'Chỉnh sửa thể loại',
                 icon: 'pi pi-cog',
                 to: '/view/quanlytheloai'
             }
