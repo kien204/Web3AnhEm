@@ -7,7 +7,13 @@
             </template>
             <template #content>
                 <div class="card flex justify-content-center">
-                    <Listbox :options="dataAll.data" optionLabel="sttName" class="w-full md:w-14rem" />
+                    <Listbox :options="dataAll.data" optionLabel="sttName" class="w-96 md:w-14rem" >
+                        <template #option="sp">
+                            <div @click="pushRouter(sp.option.detailID)">
+                                {{ sp.option.sttName }}
+                            </div>
+                        </template>
+                    </Listbox>
                 </div>
             </template>
         </Card> 
@@ -29,9 +35,9 @@
 <script setup>
 import axios from 'axios';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-
+import { useRoute, useRouter } from 'vue-router';
 const router = useRoute();
+const route = useRouter();
 const params = ref();
 const story = ref({}); 
 const dataAll = ref([]);
@@ -41,11 +47,14 @@ const formatDate = (dateStr) => {
   return new Date(dateStr).toLocaleDateString(undefined, options);
 };
 
+const pushRouter = (id) =>{
+    route.push(`/view-story/${id}`);
+}
+
 const getAllDetail = async(id) =>{
     try{
-        const res = await axios.get(`http://localhost:5041/api/DetailStory/get-all-detailstory/${id}`)
+        const res = await axios.get(`http://10.15.169.9:5041/api/DetailStory/get-all-detailstory/${id}`)
         dataAll.value = await res.data;
-        // dataImg.value = await dataAll.value.data[0]?.urlImg.trim().split(',');
     }catch(e){
         console.log(e)
     }
@@ -53,7 +62,7 @@ const getAllDetail = async(id) =>{
 
 const getStory = async(id) =>{
     try{
-        const res = await axios.get(`http://localhost:5041/api/Story/getAll?id=${id}`)
+        const res = await axios.get(`http://10.15.169.9:5041/api/Story/getAll?id=${id}`)
         story.value = await res.data.data[0];    
     }catch(e){
         console.log(e)
