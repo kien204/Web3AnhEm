@@ -6,9 +6,7 @@ import AppMenuItem from './AppMenuItem.vue';
 const model = ref([
     {
         label: 'Home',
-        items: [
-            { label: 'Trang chủ', icon: 'pi pi-fw pi-home', to: '/' },
-        ]
+        items: [{ label: 'Trang chủ', icon: 'pi pi-fw pi-home', to: '/' }]
     },
     {
         label: 'Khám phá',
@@ -16,7 +14,7 @@ const model = ref([
             { label: 'Thể loại', icon: 'pi pi-list', to: '/uikit/formlayout' },
             { label: 'Hot', icon: 'pi pi-crown', to: '/uikit/input' },
             { label: 'Lịch sử', icon: 'pi pi-history', to: '/uikit/button', class: 'rotated-icon' },
-            { label: 'Yêu thích', icon: 'pi pi-heart', to: '/uikit/table', class: 'rotated-icon' },
+            { label: 'Yêu thích', icon: 'pi pi-heart', to: '/uikit/table', class: 'rotated-icon' }
         ]
     },
     {
@@ -32,11 +30,9 @@ const model = ref([
                         label: 'Login',
                         icon: 'pi pi-fw pi-sign-in',
                         to: '/auth/login'
-                    },
-                
+                    }
                 ]
-            },
-            
+            }
         ]
     },
     {
@@ -45,12 +41,10 @@ const model = ref([
             {
                 label: 'Quản lý',
                 icon: 'pi pi-money-bill',
-                 to: '/auth/login'
-            },
-            
+                to: '/view/Login'
+            }
         ]
-    },
-   
+    }
 ]);
 </script>
 

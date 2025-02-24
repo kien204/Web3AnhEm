@@ -266,7 +266,7 @@ function calculateCustomerTotal(name) {
     </div>
 
     <div class="card">
-        <div class="font-semibold text-xl mb-4">Frozen Columns</div>
+        <div class="font-semibold text-xl mb-4">Frozen Colewewumns</div>
         <ToggleButton v-model="balanceFrozen" onIcon="pi pi-lock" offIcon="pi pi-lock-open" onLabel="Balance" offLabel="Balance" />
 
         <DataTable :value="customers2" scrollable scrollHeight="400px" class="mt-6">
