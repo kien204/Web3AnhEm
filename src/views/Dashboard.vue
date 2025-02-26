@@ -12,7 +12,7 @@ const options = ref(['list', 'grid']);
 
 const getAll = async () => {
     try {
-        const response = await axios.get('http://localhost:5041/api/Story/getAll');
+        const response = await axios.get('http://10.15.169.9:5041/api/Story/getAll');
         data.value = await response.data;
     } catch (e) {
         console.log(e)
@@ -21,7 +21,7 @@ const getAll = async () => {
 
 const getTopTT = async () => {
     try {
-        const response = await axios.get('http://localhost:5041/api/Story/get-top-view/10/TT');
+        const response = await axios.get('http://10.15.169.9:5041/api/Story/get-top-view/10/TT');
         dataTopTT.value = await response.data;
         console.log(dataTopTT.value)
     } catch (e) {
@@ -31,7 +31,7 @@ const getTopTT = async () => {
 
 const getTopTC = async () => {
     try {
-        const response = await axios.get('http://localhost:5041/api/Story/get-top-view/10/TC');
+        const response = await axios.get('http://10.15.169.9:5041/api/Story/get-top-view/10/TC');
         dataTopTC.value = await response.data;
     } catch (e) {
         console.log(e)

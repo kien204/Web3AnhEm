@@ -42,6 +42,11 @@ import { createRouter, createWebHistory } from 'vue-router';
                     component: () => import('@/views/DashBoardDetail.vue')
                 },
                 {
+                    path: '/view-story/:id',
+                    name: 'view',
+                    component: () => import('@/views/ViewStory.vue')
+                },
+                {
                     path: '/uikit/formlayout',
                     name: 'formlayout',
                     component: () => import('@/views/uikit/FormLayout.vue')
