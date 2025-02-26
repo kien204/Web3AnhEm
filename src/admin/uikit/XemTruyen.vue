@@ -32,7 +32,7 @@ onMounted(() => {
                 <p>
                     File: <a :href="truyen.coverImage" target="_blank">{{ truyen.coverImage }}</a>
                 </p>
-                <img :src="truyen.coverImage" alt="">
+                <img :src="truyen.coverImage" alt="" />
             </li>
         </ul>
     </div>

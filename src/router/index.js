@@ -37,7 +37,6 @@ import { createRouter, createWebHistory } from 'vue-router';
                     ]
                 },
                 {
-<<<<<<< HEAD
                     path: '/detail/:id',
                     name: 'dashboarddetail',
                     component: () => import('@/views/DashBoardDetail.vue')
@@ -46,14 +45,13 @@ import { createRouter, createWebHistory } from 'vue-router';
                     path: '/uikit/formlayout',
                     name: 'formlayout',
                     component: () => import('@/views/uikit/FormLayout.vue')
-=======
+                },{
                     path: '/view/login',
                     name: 'login',
                     component: () => import('@/admin/view/Login.vue')
->>>>>>> 54eb76a04d1fa7049ca882ec3d4dcb53c02eeb2d
                 },
                 {
-                    path: '/view/home', 
+                    path: '/view/home',
                     name: 'homeadmin',
                     component: HomeAdmin,
                     redirect: { name: 'quanlytruyen' },

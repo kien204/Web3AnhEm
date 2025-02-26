@@ -5,6 +5,7 @@ import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router';
 
 import axios from 'axios';
+import Toast from 'primevue/toast';
 const toast = useToast();
 const router = useRouter();
 const email = ref('');
@@ -22,11 +23,16 @@ const login = async () => {
         // if (email.value == 'admin' && password.value == 'admin') {
         router.push({ name: 'homeadmin' });
         try {
-            let res = await axios.post(`http://10.15.89.56:5041/api/Login/login`, {
+            let res = await axios.post(`http://10.15.169.9:5041/api/Login/login`, {
                 userName: email.value,
                 pass: password.value
             });
             await localStorage.setItem('token', JSON.stringify(await res.data.token));
+            if (res) {
+                router.push({ name: 'homeadmin' });
+            } else {
+                console.log('sai');
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
         }

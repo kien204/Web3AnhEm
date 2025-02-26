@@ -25,7 +25,8 @@ const editTruyen = ref({
 });
 const deleteTruyenId = ref('');
 const toast = useToast();
-const apiUrl = 'http://10.15.89.56:5041/api/Story';
+const apiUrl = 'http://10.15.169.9:5041/api/Story';
+// const apiUrl = 'http://10.15.166.140:8081/api/products';
 
 const show = (check, statu, content) => {
     toast.add({ severity: check, summary: statu, detail: content, life: 3000 });
@@ -33,22 +34,26 @@ const show = (check, statu, content) => {
 
 const addTruyen = async () => {
     try {
-        let token = localStorage.getItem('token');
-        await axios.post(`${apiUrl}/inserts`, newTruyen.value, {
-            headers: {
-                'Authorization': `Bearer ${token}`, // Đính kèm token
-                'Content-Type': 'application/json'  // Đảm bảo đúng định dạng JSON
-            }
-        });
-        newTruyen.value = {
-            storyName: '',
-            storyCode: '',
-            storyAuthor: '',
-            coverImage: '',
-            description: '',
-            typeStory: '',
-            typeDetailStory: '',
-        };
+        let token = JSON.parse(localStorage.getItem('token'));
+        try {
+            const res = await axios.post(`${apiUrl}/inserts`, datas.value, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Đính kèm token
+                }
+            });
+            console.log(res.data);
+            newTruyen.value = {
+                storyName: '',
+                storyCode: '',
+                storyAuthor: '',
+                coverImage: '',
+                description: '',
+                typeStory: '',
+                typeDetailStory: ''
+            };
+        } catch (e) {
+            console.log(e);
+        }
         show('success', 'Thành công', 'Thêm truyện thành công');
     } catch (error) {
         show('error', 'Lỗi', 'Có lỗi xảy ra khi thêm truyện');
