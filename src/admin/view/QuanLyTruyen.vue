@@ -48,7 +48,6 @@ const FilterMatchMode = {
 };
 
 onMounted(async () => {
-    // await getAllType();
     await getAllStory();
 });
 
@@ -102,38 +101,38 @@ const url = 'http://localhost:8081/api/products';
 //     }
 // ]);
 
-// const chapterData = ref([
-//     {
-//         chapterName: 'Chương 1: Khởi đầu',
-//         chapterCode: 'C001',
-//         episodeNumber: 1,
-//         storyCode: 'T001'
-//     },
-//     {
-//         chapterName: 'Chương 2: Cuộc gặp gỡ định mệnh',
-//         chapterCode: 'C002',
-//         episodeNumber: 2,
-//         storyCode: 'T001'
-//     },
-//     {
-//         chapterName: 'Chương 3: Bí mật được tiết lộ',
-//         chapterCode: 'C003',
-//         episodeNumber: 3,
-//         storyCode: 'T002'
-//     },
-//     {
-//         chapterName: 'Chương 4: Thử thách đầu tiên',
-//         chapterCode: 'C004',
-//         episodeNumber: 4,
-//         storyCode: 'T003'
-//     },
-//     {
-//         chapterName: 'Chương 5: Đồng minh bất ngờ',
-//         chapterCode: 'C005',
-//         episodeNumber: 5,
-//         storyCode: 'T004'
-//     }
-// ]);
+const chapterData = ref([
+    {
+        chapterName: 'Chương 1: Khởi đầu',
+        chapterCode: 'C001',
+        episodeNumber: 1,
+        storyCode: '1'
+    },
+    {
+        chapterName: 'Chương 2: Cuộc gặp gỡ định mệnh',
+        chapterCode: 'C002',
+        episodeNumber: 2,
+        storyCode: '1'
+    },
+    {
+        chapterName: 'Chương 3: Bí mật được tiết lộ',
+        chapterCode: 'C003',
+        episodeNumber: 3,
+        storyCode: '2'
+    },
+    {
+        chapterName: 'Chương 4: Thử thách đầu tiên',
+        chapterCode: 'C004',
+        episodeNumber: 4,
+        storyCode: '3'
+    },
+    {
+        chapterName: 'Chương 5: Đồng minh bất ngờ',
+        chapterCode: 'C005',
+        episodeNumber: 5,
+        storyCode: '12'
+    }
+]);
 
 const storyList = ref([]);
 
@@ -141,18 +140,11 @@ const getAllStory = async () => {
     try {        
         const response = await axios.get(url + '/getall');
         storyList.value = response.data;
+        // const response1 = await axios.get(url + '/get-type');
+        // typeDetail.value = response1.data.data;
     } catch (e) {
         console.log(e);
         toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Có lỗi xảy ra khi lấy dữ liệu', life: 3000 });
-    }
-};
-// lấy dữ liệu thể loại truyện từ API
-const getAllType = async () => {
-    try {
-        const response = await axios.get('http://10.15.169.9:5041/api/Story/get-type');
-        typeDetail.value = response.data.data;
-    } catch (e) {
-        console.log(e);
     }
 };
 
@@ -176,6 +168,8 @@ const validateForm = () => {
     errors.value.descriptionForm = !descriptionForm.value;
     errors.value.typeStoryForm = !typeStoryForm.value;
     errors.value.typeDetailStoryForm = typeDetailStoryForm.value.length === 0;
+    
+    
     return !Object.values(errors.value).includes(true);
 };
 
@@ -196,6 +190,13 @@ const resetForm = () => {
 // Hàm thêm truyện mới
 const addStory = async () => {
     if (validateForm()) {
+
+        // Kiểm tra trùng mã truyện khi thêm mớii
+        if(storyList.value.some(story => story.storyCode === storyCodeForm.value)){
+            toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Mã truyện đã tồn tại', life: 3000 });
+            return;
+        }
+
         try {
             const newStoryData = {
                 storyName: storyNameForm.value,
@@ -207,7 +208,7 @@ const addStory = async () => {
                 typeDetailStory: typeDetailStoryForm.value
             };
             await axios.post(url + '/add', newStoryData);
-            storyList.value.push(newStoryData);
+            await getAllStory();
             resetForm();
             dialogAddStory.value = false;
             toast.add({ severity: 'success', summary: 'Thành công', detail: 'Thêm truyện thành công', life: 3000 });
@@ -230,12 +231,20 @@ const editStoryData = (prod) => {
     coverImageForm.value = cloudEditStory.value.coverImage;
     descriptionForm.value = cloudEditStory.value.description;
     typeStoryForm.value = cloudEditStory.value.typeStory;
-    typeDetailStoryForm.value = cloudEditStory.value.typeDetailStory;
+    typeDetailStoryForm.value = cloudEditStory.value.typeDetailStory || [];
 };
 
 // Hàm sửa truyện
 const editStory = async () => {
     if (validateForm()) {
+
+        // Kiểm tra trùng mã truyện khi thêm mớii
+        if(storyList.value.some(story => 
+        story.storyCode === storyCodeForm.value && story.storyCode !== cloudEditStory.value.storyCode)){
+            toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Mã truyện đã tồn tại', life: 3000 });
+            return;
+        }
+
         try {
             const editStoryData = {
                 storyName: storyNameForm.value,
@@ -309,6 +318,7 @@ const filtersChapter = ref({
             <Toolbar class="mb-4">
                 <template #start>
                     <Button label="Thêm truyện mới" icon="pi pi-plus" severity="success" class="mr-2" @click="dialogAddStory = true" />
+                    <Button icon="pi pi-refresh" rounded raised @click="getAllStory"/>
                 </template>
             </Toolbar>
 
@@ -322,7 +332,7 @@ const filtersChapter = ref({
                 v-model:expandedRows="expandedRows"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} stories"
+                currentPageReportTemplate="Hiển thị từ {first} đến {last} trong {totalRecords} câu truyện"
             >
                 <template #header>
                     <IconField iconPosition="left">
@@ -365,11 +375,19 @@ const filtersChapter = ref({
                                         <i class="pi pi-search" />
                                     </InputIcon>
                                     <InputText v-model="filtersChapter.global.value" placeholder="Nhập mã hoặc tên chương" />
+                                    <Button label="Thêm chương mới" icon="pi pi-plus" severity="success" class="ml-2" @click="dialogAddStory = true" />
                                 </IconField>
                             </template>
                             <Column field="chapterCode" header="Mã Chương" />
                             <Column field="chapterName" header="Tên Chương" />
-                            <Column field="episodeNumber" header="Số Tập" />
+                            <Column field="episodeNumber" header="Chương" />
+
+                            <Column :exportable="false" style="min-width: 8rem">
+                                <template #body="slotProps">
+                                    <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editStoryData(slotProps.data)" />
+                                    <Button icon="pi pi-trash" outlined rounded severity="danger" @click="deleteStoryData(slotProps.data)" />
+                                </template>
+                            </Column>
                         </DataTable>
                     </div>
                 </template>
@@ -379,21 +397,21 @@ const filtersChapter = ref({
         <!-- dialog thêm truyện mới -->
         <Dialog v-model:visible="dialogAddStory" modal header="Thêm Truyện" :style="{ width: '45%' }" @hide="resetForm">
             <div class="p-fluid">
-                <div class="field" :class="{ 'p-invalid': errors.storyNameForm }">
+                <div class="field">
                     <label for="storyNameForm" class="text-lg">Tên Truyện</label>
-                    <InputText id="storyNameForm" v-model="storyNameForm" class="w-full" />
+                    <InputText id="storyNameForm" v-model="storyNameForm" class="w-full" :class="{ 'p-invalid': errors.storyNameForm }"/>
                 </div>
-                <div class="field" :class="{ 'p-invalid': errors.storyCodeForm }">
+                <div class="field">
                     <label for="storyCodeForm" class="text-lg">Mã Truyện</label>
-                    <InputText id="storyCodeForm" v-model="storyCodeForm" class="w-full" />
+                    <InputText id="storyCodeForm" v-model="storyCodeForm" class="w-full" :class="{ 'p-invalid': errors.storyCodeForm }" />
                 </div>
-                <div class="field" :class="{ 'p-invalid': errors.storyAuthorForm }">
+                <div class="field">
                     <label for="storyAuthorForm" class="text-lg">Tác Giả</label>
-                    <InputText id="storyAuthorForm" v-model="storyAuthorForm" class="w-full" />
+                    <InputText id="storyAuthorForm" v-model="storyAuthorForm" class="w-full" :class="{ 'p-invalid': errors.storyAuthorForm }" />
                 </div>
-                <div class="field" :class="{ 'p-invalid': errors.coverImageForm }">
+                <div class="field">
                     <label for="coverImage" class="text-lg">Ảnh Bìa</label>
-                    <InputText id="coverImageForm" v-model="coverImageForm" class="w-full" />
+                    <InputText id="coverImageForm" v-model="coverImageForm" class="w-full" :class="{ 'p-invalid': errors.coverImageForm }" />
                 </div>
                 <div class="field">
                     <label for="descriptionForm" class="text-lg">Mô Tả</label>
@@ -495,6 +513,137 @@ const filtersChapter = ref({
         </Dialog>
 
         <!-- dialog xác nhận xóa truyện -->
+        <Dialog v-model:visible="dialogDeleteStory" :style="{ width: '450px' }" header="Xóa truyện" :modal="true">
+            <div class="confirmation-content">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+                <span v-if="cloudDeleteStory">Bạn chắc chắn muốn xóa truyện <b>{{ cloudDeleteStory.storyName }}</b>?</span>
+            </div>
+            <template #footer>
+                <Button label="No" icon="pi pi-times" text @click="dialogDeleteStory = false" />
+                <Button label="Yes" icon="pi pi-check" text @click="deleteStory" />
+            </template>
+        </Dialog>
+
+
+        <!-- dialog thêm chương mới -->
+        <Dialog v-model:visible="dialogAddStory" modal header="Thêm Truyện" :style="{ width: '45%' }" @hide="resetForm">
+            <div class="p-fluid">
+                <div class="field">
+                    <label for="storyNameForm" class="text-lg">Tên Truyện</label>
+                    <InputText id="storyNameForm" v-model="storyNameForm" class="w-full" :class="{ 'p-invalid': errors.storyNameForm }"/>
+                </div>
+                <div class="field">
+                    <label for="storyCodeForm" class="text-lg">Mã Truyện</label>
+                    <InputText id="storyCodeForm" v-model="storyCodeForm" class="w-full" :class="{ 'p-invalid': errors.storyCodeForm }" />
+                </div>
+                <div class="field">
+                    <label for="storyAuthorForm" class="text-lg">Tác Giả</label>
+                    <InputText id="storyAuthorForm" v-model="storyAuthorForm" class="w-full" :class="{ 'p-invalid': errors.storyAuthorForm }" />
+                </div>
+                <div class="field">
+                    <label for="coverImage" class="text-lg">Ảnh Bìa</label>
+                    <InputText id="coverImageForm" v-model="coverImageForm" class="w-full" :class="{ 'p-invalid': errors.coverImageForm }" />
+                </div>
+                <div class="field">
+                    <label for="descriptionForm" class="text-lg">Mô Tả</label>
+                    <Textarea id="descriptionForm" v-model="descriptionForm" rows="3" class="w-full" :class="{ 'p-invalid': errors.descriptionForm }" />
+                </div>
+                <div class="field">
+                    <label for="typeStoryForm" class="text-lg">Thể Loại</label>
+                    <div class="flex align-items-center mb-2">
+                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTT" name="typeStory" value="TT" v-model="typeStoryForm" />
+                        <label for="typeStoryTT" class="ml-2 mr-6">TT</label>
+                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTC" name="typeStory" value="TC" v-model="typeStoryForm" />
+                        <label for="typeStoryTC" class="ml-2">TC</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="typeDetail" class="text-lg">Chi Tiết Thể Loại</label>
+                    <div class="flex flex-wrap">
+                        <div v-for="item in typeDetail" :key="item" class="flex align-items-center mb-2 mr-4">
+                            <Checkbox :class="{ 'p-invalid': errors.typeDetailStoryForm }" v-model="typeDetailStoryForm" :value="item" />
+                            <label class="ml-2">{{ item }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-content-end gap-2">
+                    <Button
+                        type="button"
+                        label="Hủy"
+                        icon="pi pi-times"
+                        class="p-button-secondary"
+                        @click="
+                            () => {
+                                resetForm();
+                                dialogAddStory = false;
+                            }
+                        "
+                    />
+                    <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success" @click="addStory" />
+                </div>
+            </div>
+        </Dialog>
+
+        <!-- dialog chỉnh sửa chương -->
+        <Dialog v-model:visible="dialogEditStory" modal header="Chỉnh sửa Truyện" :style="{ width: '45%' }" @hide="resetForm">
+            <div class="p-fluid">
+                <div class="field" :class="{ 'p-invalid': errors.storyNameForm }">
+                    <label for="storyNameForm" class="text-lg">Tên Truyện</label>
+                    <InputText id="storyNameForm" v-model="storyNameForm" class="w-full" />
+                </div>
+                <div class="field" :class="{ 'p-invalid': errors.storyCodeForm }">
+                    <label for="storyCodeForm" class="text-lg">Mã Truyện</label>
+                    <InputText id="storyCodeForm" v-model="storyCodeForm" class="w-full" />
+                </div>
+                <div class="field" :class="{ 'p-invalid': errors.storyAuthorForm }">
+                    <label for="storyAuthorForm" class="text-lg">Tác Giả</label>
+                    <InputText id="storyAuthorForm" v-model="storyAuthorForm" class="w-full" />
+                </div>
+                <div class="field" :class="{ 'p-invalid': errors.coverImageForm }">
+                    <label for="coverImageForm" class="text-lg">Ảnh Bìa</label>
+                    <InputText id="coverImageForm" v-model="coverImageForm" class="w-full" />
+                </div>
+                <div class="field">
+                    <label for="descriptionForm" class="text-lg">Mô Tả</label>
+                    <Textarea id="descriptionForm" v-model="descriptionForm" rows="3" class="w-full" :class="{ 'p-invalid': errors.descriptionForm }" />
+                </div>
+                <div class="field">
+                    <label for="typeStoryForm" class="text-lg">Thể Loại</label>
+                    <div class="flex align-items-center mb-2">
+                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTT" name="typeStoryForm" value="TT" v-model="typeStoryForm" />
+                        <label for="typeStoryTT" class="ml-2 mr-6">TT</label>
+                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTC" name="typeStoryForm" value="TC" v-model="typeStoryForm" />
+                        <label for="typeStoryTC" class="ml-2">TC</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="typeDetail" class="text-lg">Chi Tiết Thể Loại</label>
+                    <div class="flex flex-wrap">
+                        <div v-for="item in typeDetail" :key="item" class="flex align-items-center mb-2 mr-4">
+                            <Checkbox :class="{ 'p-invalid': errors.typeDetailStoryForm }" v-model="typeDetailStoryForm" :value="item" />
+                            <label class="ml-2">{{ item }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-content-end gap-2">
+                    <Button
+                        type="button"
+                        label="Hủy"
+                        icon="pi pi-times"
+                        class="p-button-secondary"
+                        @click="
+                            () => {
+                                resetForm();
+                                dialogEditStory = false;
+                            }
+                        "
+                    />
+                    <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success" @click="editStory" />
+                </div>
+            </div>
+        </Dialog>
+
+        <!-- dialog xác nhận xóa chương -->
         <Dialog v-model:visible="dialogDeleteStory" :style="{ width: '450px' }" header="Xóa truyện" :modal="true">
             <div class="confirmation-content">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
