@@ -33,18 +33,18 @@ import { createRouter, createWebHistory } from 'vue-router';
                             path: '/uikit/table',
                             name: 'table',
                             component: () => import('@/views/uikit/TableDoc.vue')
+                        },
+                        {
+                            path: '/detail/:id',
+                            name: 'dashboarddetail',
+                            component: () => import('@/views/DashBoardDetail.vue')
+                        },
+                        {
+                            path: '/view-story/:id',
+                            name: 'view',
+                            component: () => import('@/views/ViewStory.vue')
                         }
                     ]
-                },
-                {
-                    path: '/detail/:id',
-                    name: 'dashboarddetail',
-                    component: () => import('@/views/DashBoardDetail.vue')
-                },
-                {
-                    path: '/view-story/:id',
-                    name: 'view',
-                    component: () => import('@/views/ViewStory.vue')
                 },
                 {
                     path: '/uikit/formlayout',
