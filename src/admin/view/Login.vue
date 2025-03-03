@@ -19,25 +19,19 @@ const show = (check, statu, content) => {
 };
 
 const login = async () => {
-    if (true) {
-        // if (email.value == 'admin' && password.value == 'admin') {
-        router.push({ name: 'homeadmin' });
-        try {
-            let res = await axios.post(`http://10.15.169.9:5041/api/Login/login`, {
-                userName: email.value,
-                pass: password.value
-            });
-            await localStorage.setItem('token', JSON.stringify(await res.data.token));
-            if (res) {
-                router.push({ name: 'homeadmin' });
-            } else {
-                console.log('sai');
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
+    try {
+        let res = await axios.post(`http://10.15.250.41:5041/api/Login/login`, {
+            userName: email.value,
+            pass: password.value
+        });
+        await localStorage.setItem('token', JSON.stringify(await res.data.token));
+        if (res) {
+            router.push({ name: 'homeadmin' });
+        } else {
+            console.log('Tài khoản hoặc mật khẩu không đúng');
         }
-    } else {
-        show('error', 'Thất bại', 'Đăng nhập thất bại');
+    } catch (error) {
+        console.error('Error fetching data:', error);
     }
 };
 </script>

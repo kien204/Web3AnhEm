@@ -17,7 +17,7 @@ const coverImageForm = ref('');
 const descriptionForm = ref('');
 const typeStoryForm = ref('');
 const typeDetailStoryForm = ref([]);
-const typeDetail = ref(['Hành động', 'Viễn tưởng', 'Đời thường', 'Lãng mạn', 'Ma quái']);
+const typeDetail = ref([]);
 
 // Khai báo biến lưu trữ truyện khi sửa or xóa
 const cloudDeleteStory = ref({});
@@ -53,101 +53,27 @@ const FilterMatchMode = {
     DATE_AFTER: 'dateAfter'
 };
 
+const token = JSON.parse(localStorage.getItem('token')); // Lấy token từ localStorage
 onMounted(async () => {
     await getAllStory();
 });
 
-const url = 'http://localhost:8081/api/products';
+// const url = 'http://localhost:8081/api/products';
+const url = 'http://10.15.250.41:5041/api';
 
-// const storyList = ref([
-//     {
-//         storyName: 'Truyện 1',
-//         storyCode: 'T001',
-//         storyAuthor: 'Tác giả 1',
-//         coverImage: 'image1.jpg',
-//         description: 'Mô tả truyện 1',
-//         typeStory: 'Phiêu lưu',
-//         typeDetailStory: 'Hành động'
-//     },
-//     {
-//         storyName: 'Truyện 2',
-//         storyCode: 'T002',
-//         storyAuthor: 'Tác giả 2',
-//         coverImage: 'image2.jpg',
-//         description: 'Mô tả truyện 2',
-//         typeStory: 'Khoa học viễn tưởng',
-//         typeDetailStory: 'Viễn tưởng'
-//     },
-//     {
-//         storyName: 'Truyện 3',
-//         storyCode: 'T003',
-//         storyAuthor: 'Tác giả 3',
-//         coverImage: 'image3.jpg',
-//         description: 'Mô tả truyện 3',
-//         typeStory: 'Hài hước',
-//         typeDetailStory: 'Đời thường'
-//     },
-//     {
-//         storyName: 'Truyện 4',
-//         storyCode: 'T004',
-//         storyAuthor: 'Tác giả 4',
-//         coverImage: 'image4.jpg',
-//         description: 'Mô tả truyện 4',
-//         typeStory: 'Tình cảm',
-//         typeDetailStory: 'Lãng mạn'
-//     },
-//     {
-//         storyName: 'Truyện 5',
-//         storyCode: 'T005',
-//         storyAuthor: 'Tác giả 5',
-//         coverImage: 'image5.jpg',
-//         description: 'Mô tả truyện 5',
-//         typeStory: 'Kinh dị',
-//         typeDetailStory: 'Ma quái'
-//     }
-// ]);
-
-const chapterterData = ref([
-    {
-        chapterterName: 'Chương 1: Khởi đầu',
-        chapterterCode: 'C001',
-        episodeNumber: 1,
-        storyCode: '1'
-    },
-    {
-        chapterterName: 'Chương 2: Cuộc gặp gỡ định mệnh',
-        chapterterCode: 'C002',
-        episodeNumber: 2,
-        storyCode: '1'
-    },
-    {
-        chapterterName: 'Chương 3: Bí mật được tiết lộ',
-        chapterterCode: 'C003',
-        episodeNumber: 3,
-        storyCode: '2'
-    },
-    {
-        chapterterName: 'Chương 4: Thử thách đầu tiên',
-        chapterterCode: 'C004',
-        episodeNumber: 4,
-        storyCode: '3'
-    },
-    {
-        chapterterName: 'Chương 5: Đồng minh bất ngờ',
-        chapterterCode: 'C005',
-        episodeNumber: 5,
-        storyCode: '12'
-    }
-]);
-
+const chapterterData = ref([]);
 const storyList = ref([]);
 
 const getAllStory = async () => {
     try {
-        const response = await axios.get(url + '/getall');
-        storyList.value = response.data;
-        // const response1 = await axios.get(url + '/get-type');
-        // typeDetail.value = response1.data.data;
+        const response = await axios.get(url + '/Story/getAll');
+        storyList.value = response.data.data;
+
+        const response2 = await axios.get(url + '/DetailStory/get-all-detailstory');
+        chapterterData.value = response2.data.data;
+
+        const response1 = await axios.get(url + '/Story/get-type');
+        typeDetail.value = response1.data.data;
     } catch (e) {
         console.log(e);
         toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Có lỗi xảy ra khi lấy dữ liệu', life: 3000 });
@@ -178,6 +104,16 @@ const validateForm = () => {
     return !Object.values(errors.value).includes(true);
 };
 
+const validateFormEdit = () => {
+    errors.value.storyNameForm = !storyNameForm.value;
+    errors.value.storyAuthorForm = !storyAuthorForm.value;
+    errors.value.coverImageForm = !coverImageForm.value;
+    errors.value.descriptionForm = !descriptionForm.value;
+    errors.value.typeDetailStoryForm = typeDetailStoryForm.value.length === 0;
+
+    return !Object.values(errors.value).includes(true);
+};
+
 // Hàm reset form
 const resetFormStory = () => {
     storyNameForm.value = '';
@@ -196,7 +132,7 @@ const resetFormStory = () => {
 const addStory = async () => {
     if (validateForm()) {
         // Kiểm tra trùng mã truyện khi thêm mớii
-        if (storyList.value.some((story) => story.storyCode === detailIDForm.value)) {
+        if (storyList.value.some((story) => story.storyCode === storyCodeForm.value)) {
             toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Mã truyện đã tồn tại', life: 3000 });
             return;
         }
@@ -205,13 +141,17 @@ const addStory = async () => {
             const newStoryData = {
                 storyName: storyNameForm.value,
                 storyCode: storyCodeForm.value,
-                storyAuthor: storyAuthorForm.value,
-                coverImage: coverImageForm.value,
+                autho: storyAuthorForm.value,
+                imgCover: coverImageForm.value,
                 description: descriptionForm.value,
                 typeStory: typeStoryForm.value,
-                typeDetailStory: typeDetailStoryForm.value
+                typeDetailStory: typeDetailStoryForm.value.join(',') + "," + AddTypeDetailStoryForm.value
             };
-            await axios.post(url + '/add', newStoryData);
+            await axios.post(url + '/Story/inserts', newStoryData, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Thêm token vào header
+                }
+            });
             await getAllStory();
             resetFormStory();
             dialogAddStory.value = false;
@@ -227,20 +167,18 @@ const addStory = async () => {
 
 // Hàm gọi dialog sửa truyện và chuyền data dòng đó vào
 const editStoryData = (prod) => {
-    cloudEditStory.value = prod;
+    cloudEditStory.value = prod;    
     dialogEditStory.value = true;
     storyNameForm.value = cloudEditStory.value.storyName;
-    storyCodeForm.value = cloudEditStory.value.storyCode;
     storyAuthorForm.value = cloudEditStory.value.storyAuthor;
     coverImageForm.value = cloudEditStory.value.coverImage;
     descriptionForm.value = cloudEditStory.value.description;
-    typeStoryForm.value = cloudEditStory.value.typeStory;
-    typeDetailStoryForm.value = cloudEditStory.value.typeDetailStory || [];
+    typeDetailStoryForm.value = cloudEditStory.value.typeDetailStory.split(",") || [];
 };
 
 // Hàm sửa truyện
 const editStory = async () => {
-    if (validateForm()) {
+    if (validateFormEdit()) {
         // Kiểm tra trùng mã truyện khi thêm mớii
         if (storyList.value.some((story) => story.storyCode === storyCodeForm.value && story.storyCode !== cloudEditStory.value.storyCode)) {
             toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Mã truyện đã tồn tại', life: 3000 });
@@ -249,20 +187,22 @@ const editStory = async () => {
 
         try {
             const editStoryData = {
+                id: cloudEditStory.value.id,
                 storyName: storyNameForm.value,
-                storyCode: storyCodeForm.value,
-                storyAuthor: storyAuthorForm.value,
                 coverImage: coverImageForm.value,
                 description: descriptionForm.value,
-                typeStory: typeStoryForm.value,
-                typeDetailStory: typeDetailStoryForm.value
+                storyAuthor: storyAuthorForm.value,
+                typeDetailStory: typeDetailStoryForm.join(',') + "," + AddTypeDetailStoryForm.value
             };
-            const storyCodeEdit = cloudEditStory.value.storyCode;
-            await axios.put(url + `/sua/${storyCodeEdit}`, editStoryData);
-            const index = storyList.value.findIndex((story) => story.storyCode === cloudEditStory.value.storyCode);
-            if (index !== -1) {
-                storyList.value[index] = { ...editStoryData };
-            }
+            console.log(editStoryData);
+            
+            await axios.put(url + `/Story/update-story`, editStoryData, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}` // Thêm token vào header
+                    }
+                }
+            );
             resetFormStory();
             dialogEditStory.value = false;
             toast.add({ severity: 'success', summary: 'Thành công', detail: 'Sửa truyện thành công', life: 3000 });
@@ -278,13 +218,21 @@ const editStory = async () => {
 // Hàm xác nhận xóa truyện
 const deleteStory = async () => {
     try {
-        const storyCodeDele = cloudDeleteStory.value.storyCode;
-        await axios.delete(url + `/xoa/${storyCodeDele}`);
+        const storyCodeDele = cloudDeleteStory.value.id;
+        
+        await axios.delete(url + `/Story/delete-story/${storyCodeDele}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}` // Thêm token vào header
+                }
+            }
+        );
         // Cập nhật lại danh sách bằng cách lọc bỏ truyện vừa xóa
         storyList.value = storyList.value.filter((story) => story.storyCode !== storyCodeDele);
         dialogDeleteStory.value = false;
         toast.add({ severity: 'success', summary: 'Thành công', detail: `Truyện ${cloudDeleteStory.value.storyName} đã được xóa thành công`, life: 3000 });
         cloudDeleteStory.value = {};
+        getAllStory();
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Lỗi', detail: `Có lỗi xảy ra khi xóa truyện ${cloudDeleteStory.value.storyName}`, life: 3000 });
     }
@@ -336,7 +284,7 @@ const resetFormChapter = () => {
 
 // Hàm thêm chương mới
 const addChapter = async () => {
-    if (validateFormChapter()) {
+    if (validateFormChapterEdit()) {
         // Kiểm tra trùng mã truyện khi thêm mớii
         if (chapterList.value.some((chapter) => chapter.detailID === detailIDForm.value)) {
             toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Mã truyện đã tồn tại', life: 3000 });
@@ -344,6 +292,7 @@ const addChapter = async () => {
         }
 
         try {
+            const arr = AddTypeDetailStoryForm.value.split(',');
             const newStoryData = {
                 storyName: storyNameForm.value,
                 storyCode: storyCodeForm.value,
@@ -351,8 +300,9 @@ const addChapter = async () => {
                 coverImage: coverImageForm.value,
                 description: descriptionForm.value,
                 typeStory: typeStoryForm.value,
-                typeDetailStory: typeDetailStoryForm.value
+                typeDetailStory: typeDetailStoryForm.value + arr
             };
+            
             await axios.post(url + '/add', newStoryData);
             await getAllStory();
             resetFormChapter();
@@ -397,13 +347,15 @@ const editChapter = async () => {
                 coverImage: coverImageForm.value,
                 description: descriptionForm.value,
                 typeStory: typeStoryForm.value,
-                typeDetailStory: typeDetailStoryForm.value
+                typeDetailStory: typeDetailStoryForm.value + AddTypeDetailStoryForm.value
             };
+            console.log(editStoryData.typeDetailStory);
+            
             const chapterCodeEdit = cloudeditChapter.value.detailID;
-            await axios.put(url + `/sua/${chapterCodeEdit}`, editChapterData);
+            await axios.put(url + `/sua/${chapterCodeEdit}`, editStoryData);
             const index = chapterList.value.findIndex((chapter) => chapter.detailID === cloudeditChapter.value.detailID);
             if (index !== -1) {
-                chapterList.value[index] = { ...editChapterData };
+                chapterList.value[index] = { ...editStoryData };
             }
             resetFormChapter();
             dialogEditChapter.value = false;
@@ -421,7 +373,13 @@ const editChapter = async () => {
 const deleteChapter = async () => {
     try {
         const chapterCodeDele = clouddeleteChapter.value.detailID;
-        await axios.delete(url + `/xoa/${chapterCodeDele}`);
+        await axios.delete(url + `/DetailStory/delete-detailstory/${chapterCodeDele}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}` // Thêm token vào header
+                }
+            }
+        );
         // Cập nhật lại danh sách bằng cách lọc bỏ truyện vừa xóa
         chapterList.value = chapterList.value.filter((chapter) => chapter.detailID !== chapterCodeDele);
         dialogDeleteStory.value = false;
@@ -451,8 +409,8 @@ const onAdvancedUpload = () => {
 };
 
 // Hàm lấy danh sách chương theo mã truyện
-const getchaptertersForStory = (storyCode) => {
-    return chapterterData.value.filter((chapterter) => chapterter.storyCode === storyCode);
+const getchaptertersForStory = (id) => {
+    return chapterterData.value.filter((chapterter) => chapterter.storyID === id);
 };
 
 // Hàm tìm kiếm
@@ -498,7 +456,7 @@ const filterschapterter = ref({
                         <InputText v-model="filtersStory.global.value" placeholder="Nhập mã hoặc tên truyện" />
                     </IconField>
                 </template>
-                <Column expander style="width: 2rem" />
+                <Column expander style="width: 2rem"/>
                 <Column field="storyCode" header="Mã Truyện" />
                 <Column field="storyName" header="Tên Truyện" />
                 <Column field="storyAuthor" header="Tác Giả" />
@@ -510,7 +468,7 @@ const filterschapterter = ref({
                 <Column field="typeStory" header="Thể Loại" />
                 <Column field="typeDetailStory" header="Chi Tiết Thể Loại">
                     <template #body="{ data }">
-                        {{ data.typeDetailStory.join(', ') }}
+                        {{ data.typeDetailStory }}
                     </template>
                 </Column>
                 <Column :exportable="false" style="min-width: 8rem">
@@ -524,19 +482,18 @@ const filterschapterter = ref({
                 <template #expansion="slotProps">
                     <div class="p-3">
                         <h5>Danh sách chương - {{ slotProps.data.storyName }}</h5>
-                        <DataTable :value="getchaptertersForStory(slotProps.data.storyCode)" responsiveLayout="scroll" :globalFilterFields="['chapterterName', 'chapterterCode']" :filters="filterschapterter">
+                        <DataTable :value="getchaptertersForStory(slotProps.data.id)" responsiveLayout="scroll" :globalFilterFields="['detailID', 'detailID']" :filters="filterschapterter">
                             <template #header>
                                 <IconField iconPosition="left">
                                     <InputIcon>
                                         <i class="pi pi-search" />
                                     </InputIcon>
                                     <InputText v-model="filterschapterter.global.value" placeholder="Nhập mã hoặc tên chương" />
-                                    <Button label="Thêm chương mới" icon="pi pi-plus" severity="success" class="ml-2" @click="codeChapterData(slotProps.data.storyCode)" />
+                                    <Button label="Thêm chương mới" icon="pi pi-plus" severity="success" class="ml-2" @click="codeChapterData(slotProps.data.id)" />
                                 </IconField>
                             </template>
-                            <Column field="chapterterCode" header="Mã Chương" />
-                            <Column field="chapterterName" header="Tên Chương" />
-                            <Column field="episodeNumber" header="Chương" />
+                            <Column field="detailID" header="Mã Chương" />
+                            <Column field="sttName" header="Tên Chương" />
 
                             <Column :exportable="false" style="min-width: 8rem">
                                 <template #body="slotProps">
@@ -590,6 +547,9 @@ const filterschapterter = ref({
                             <label class="ml-2">{{ item }}</label>
                         </div>
                     </div>
+                    <div class="field">
+                        <InputText id="AddTypeDetailStoryForm" class="w-full mb-5" />
+                    </div>                
                 </div>
                 <div class="flex justify-content-end gap-2">
                     <Button
@@ -616,10 +576,6 @@ const filterschapterter = ref({
                     <label for="storyNameForm" class="text-lg">Tên Truyện</label>
                     <InputText id="storyNameForm" v-model="storyNameForm" class="w-full" />
                 </div>
-                <div class="field" :class="{ 'p-invalid': errors.storyCodeForm }">
-                    <label for="storyCodeForm" class="text-lg">Mã Truyện</label>
-                    <InputText id="storyCodeForm" v-model="storyCodeForm" class="w-full" />
-                </div>
                 <div class="field" :class="{ 'p-invalid': errors.storyAuthorForm }">
                     <label for="storyAuthorForm" class="text-lg">Tác Giả</label>
                     <InputText id="storyAuthorForm" v-model="storyAuthorForm" class="w-full" />
@@ -632,15 +588,7 @@ const filterschapterter = ref({
                     <label for="descriptionForm" class="text-lg">Mô Tả</label>
                     <Textarea id="descriptionForm" v-model="descriptionForm" rows="3" class="w-full" :class="{ 'p-invalid': errors.descriptionForm }" />
                 </div>
-                <div class="field">
-                    <label for="typeStoryForm" class="text-lg">Thể Loại</label>
-                    <div class="flex align-items-center mb-2">
-                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTT" name="typeStoryForm" value="TT" v-model="typeStoryForm" />
-                        <label for="typeStoryTT" class="ml-2 mr-6">TT</label>
-                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTC" name="typeStoryForm" value="TC" v-model="typeStoryForm" />
-                        <label for="typeStoryTC" class="ml-2">TC</label>
-                    </div>
-                </div>
+                
                 <div class="field">
                     <label for="typeDetail" class="text-lg">Chi Tiết Thể Loại</label>
                     <div class="flex flex-wrap">
@@ -648,6 +596,9 @@ const filterschapterter = ref({
                             <Checkbox :class="{ 'p-invalid': errors.typeDetailStoryForm }" v-model="typeDetailStoryForm" :value="item" />
                             <label class="ml-2">{{ item }}</label>
                         </div>
+                    </div>
+                    <div class="field">
+                        <InputText id="AddTypeDetailStoryForm" class="w-full mb-5" />
                     </div>
                 </div>
                 <div class="flex justify-content-end gap-2">
