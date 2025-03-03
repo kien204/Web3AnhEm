@@ -21,7 +21,7 @@
                     <div class="border border-solid border-slate-200 rounded-md overflow-hidden overflow-y-auto" :class="!checkMore ? 'h-[100px]' : 'h-[250px]'">
                         <div class="flex flex-col gap-3 m-2">
                             <div class="" v-for="item in dataAll.data" :key="item">
-                                <div class="bg-white border border-solid border-slate-200 hover:shadow-md rounded-md cursor-pointer" @click="pushView(item.detailId)">
+                                <div class="border border-solid border-slate-200 hover:shadow-md rounded-md cursor-pointer" @click="pushView(item.detailId)">
                                     <p class="p-4">{{ item.chapter }}</p>
                                 </div>
                             </div>

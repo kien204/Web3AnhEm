@@ -107,8 +107,8 @@ onMounted(async () => {
                         <div v-for="(item, index) in slotProps.items" :key="index" class="col-span-4">
                             <Card style="height: 400px; overflow: hidden">
                                 <template #header>
-                                    <div class="overflow-hidden w-auto h-72">
-                                        <Image alt="user header" :src="item.coverImage" />
+                                    <div class="overflow-hidden w-auto h-64">
+                                        <img alt="user header" :src="item.coverImage" class="!h-full !w-auto" />
                                     </div>
                                 </template>
                                 <template #title>
@@ -129,33 +129,42 @@ onMounted(async () => {
                 </template>
             </DataView>
         </div>
-        <div class="card col-span-3 bg-slate-700">
-            <div class="h-1/2">
-                <div>
-                    <p class="text-xl font-bold text-white">Tóp Truyện Tranh &#129512; &#128685; &#128293;</p>
-                </div>
-                <div class="h-5/6 bg-white border border-solid border-slate-200 rounded-md overflow-hidden overflow-y-auto">
-                    <div class="m-3 hover:shadow-md hover:rounded-md" v-for="item in dataTopTT.data" :key="item">
-                        <img :alt="item.storyAuthor" :src="item.coverImage" class="rounded-t-md" />
-                        <div>
-                            <p class="text-center">{{ item.storyName }}</p>
+        <div class="col-span-3">
+            <Card>
+                <template #title>
+                    <p>Danh sách top</p>
+                </template>
+                <template #content>
+                    <div class="">
+                        <div class="h-1/2">
+                            <div>
+                                <p class="text-xl font-bold">Tóp Truyện Tranh &#129512; &#128685; &#128293;</p>
+                            </div>
+                            <div class="h-5/6 bg-white border border-solid border-slate-200 rounded-md overflow-hidden overflow-y-auto">
+                                <div class="m-3 hover:shadow-md hover:rounded-md" v-for="item in dataTopTT.data" :key="item">
+                                    <img :alt="item.storyAuthor" :src="item.coverImage" class="rounded-t-md" />
+                                    <div>
+                                        <p class="text-center">{{ item.storyName }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="h-1/2">
+                            <div>
+                                <p class="text-xl font-bold">Tóp Truyện Chữ &#129512; &#128685; &#128293;</p>
+                            </div>
+                            <div class="h-5/6 bg-white border border-solid border-slate-200 rounded-md overflow-hidden overflow-y-auto">
+                                <div class="m-3 hover:shadow-md hover:rounded-md" v-for="item in dataTopTC.data" :key="item">
+                                    <img :alt="item.storyAuthor" :src="item.coverImage" class="rounded-t-md" />
+                                    <div>
+                                        <p class="text-center">{{ item.storyName }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="h-1/2">
-                <div>
-                    <p class="text-xl font-bold text-white">Tóp Truyện Chữ &#129512; &#128685; &#128293;</p>
-                </div>
-                <div class="h-5/6 bg-white border border-solid border-slate-200 rounded-md overflow-hidden overflow-y-auto">
-                    <div class="m-3 hover:shadow-md hover:rounded-md" v-for="item in dataTopTC.data" :key="item">
-                        <img :alt="item.storyAuthor" :src="item.coverImage" class="rounded-t-md" />
-                        <div>
-                            <p class="text-center">{{ item.storyName }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </template>
+            </Card>
         </div>
     </div>
 </template>
