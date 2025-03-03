@@ -9,38 +9,47 @@ const dataTopTT = ref([]);
 const dataTopTC = ref([]);
 const layout = ref('grid');
 const options = ref(['list', 'grid']);
-
 const getAll = async () => {
     try {
-        const response = await axios.get('http://10.15.169.9:5041/api/Story/getAll');
+        const response = await axios.get('http://10.15.250.41:5041/api/Story/getAll');
         data.value = await response.data;
     } catch (e) {
-        console.log(e)
+        console.log(e);
     }
-}
+};
 
 const getTopTT = async () => {
     try {
-        const response = await axios.get('http://10.15.169.9:5041/api/Story/get-top-view/10/TT');
+        const response = await axios.get('http://10.15.250.41:5041/api/Story/get-top-view/10/TT');
         dataTopTT.value = await response.data;
-        console.log(dataTopTT.value)
+        console.log(dataTopTT.value);
     } catch (e) {
-        console.log(e)
+        console.log(e);
     }
-}
+};
 
 const getTopTC = async () => {
     try {
-        const response = await axios.get('http://10.15.169.9:5041/api/Story/get-top-view/10/TC');
+        const response = await axios.get('http://10.15.250.41:5041/api/Story/get-top-view/10/TC');
         dataTopTC.value = await response.data;
     } catch (e) {
-        console.log(e)
+        console.log(e);
     }
-}
+};
 
-const pushRoute = (id) =>{
-    route.push(`detail/${id}`)
-}
+const pushView = async (id) => {
+    try {
+        const response = await axios.get(`http://10.15.250.41:5041/api/DetailStory/get-chapter/${id}`);
+        let data = await response.data;
+        route.push(`view-story/${data.data[0].detailId}`);
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+const pushRoute = (id) => {
+    route.push(`detail/${id}`);
+};
 
 onMounted(async () => {
     await getAll();
@@ -65,9 +74,8 @@ onMounted(async () => {
                 <template #list="slotProps">
                     <div class="flex flex-col">
                         <div v-for="(item, index) in slotProps.items" :key="index">
-                            <div class="flex flex-col p-4 gap-3"
-                                :class="{ 'border-top-1 surface-border': index !== 0 }">
-                                <Card style=" overflow: hidden">
+                            <div class="flex flex-col p-4 gap-3" :class="{ 'border-top-1 surface-border': index !== 0 }">
+                                <Card style="overflow: hidden">
                                     <template #content>
                                         <div class="flex gap-10 justify-center">
                                             <div class="overflow-hidden w-48">
@@ -76,17 +84,13 @@ onMounted(async () => {
                                             <div class="flex-1 flex items-center">
                                                 <div>
                                                     <h1>{{ item.storyName }}</h1>
-                                                    <p class="">{{ item.description.length > 35 ?
-                                                        item.description.substr(0, 30) + " ..." : item.description }}
-                                                    </p>
+                                                    <p class="">{{ item.description.length > 35 ? item.description.substr(0, 30) + ' ...' : item.description }}</p>
                                                 </div>
                                             </div>
                                             <div class="flex-1 flex items-center justify-end">
                                                 <div>
-                                                    <Button text raised label="Chi tiết" @click="pushRoute(item.id)" severity="info  " outlined
-                                                        class="" /><br />
-                                                    <Button text raised severity="help" label="Xem ngay"
-                                                        class=" mt-5" />
+                                                    <Button text raised label="Chi tiết" @click="pushRoute(item.id)" severity="info  " outlined class="" /><br />
+                                                    <Button text raised severity="help" @click="pushView(item.id)" label="Xem ngay" class="mt-5" />
                                                 </div>
                                             </div>
                                         </div>
@@ -102,21 +106,20 @@ onMounted(async () => {
                         <div v-for="(item, index) in slotProps.items" :key="index" class="col-span-4">
                             <Card style="height: 400px; overflow: hidden">
                                 <template #header>
-                                    <div class="overflow-hidden w-auto h-72">
-                                        <Image alt="user header" :src="item.coverImage" />
+                                    <div class="overflow-hidden w-auto h-64">
+                                        <img alt="user header" :src="item.coverImage" class="!h-full !w-auto" />
                                     </div>
                                 </template>
                                 <template #title>
                                     <h1>{{ item.storyName }}</h1>
                                 </template>
                                 <template #content>
-                                    <p class="">{{ item.description.length > 35 ? item.description.substr(0, 30) + "..."
-                                        : item.description }}</p>
+                                    <p class="">{{ item.description.length > 35 ? item.description.substr(0, 30) + '...' : item.description }}</p>
                                 </template>
                                 <template #footer>
                                     <div class="flex gap-4 mt-1">
                                         <Button text raised label="Chi tiết" @click="pushRoute(item.id)" severity="info" outlined class="w-full" />
-                                        <Button text raised label="Xem ngay" class="w-full" severity="help" />
+                                        <Button text raised @click="pushView(item.id)" label="Xem ngay" class="w-full" severity="help" />
                                     </div>
                                 </template>
                             </Card>
@@ -125,35 +128,42 @@ onMounted(async () => {
                 </template>
             </DataView>
         </div>
-        <div class=" card col-span-3 bg-slate-700">
-            <div class="h-1/2">
-                <div>
-                    <p class="text-xl font-bold text-white">Tóp Truyện Tranh &#129512; &#128685; &#128293;</p>
-                </div>
-                <Listbox :options="dataTopTT.data" optionLabel="storyName" class="w-full ">
-                    <template #option="slotProps">
-                        <div class="h-full">
-                            <img :alt="slotProps.option.storyAuthor"
-                                :src="slotProps.option.coverImage"/>
-                            <div><p class="text-center">{{ slotProps.option.storyName }}</p></div>
+        <div class="col-span-3">
+            <Card>
+                <template #title>
+                    <p>Danh sách top</p>
+                </template>
+                <template #content>
+                    <div class="">
+                        <div class="h-1/2">
+                            <div>
+                                <p class="text-xl font-bold">Tóp Truyện Tranh &#129512; &#128685; &#128293;</p>
+                            </div>
+                            <div class="h-5/6 bg-white border border-solid border-slate-200 rounded-md overflow-hidden overflow-y-auto">
+                                <div class="m-3 hover:shadow-md hover:rounded-md" v-for="item in dataTopTT.data" :key="item">
+                                    <img :alt="item.storyAuthor" :src="item.coverImage" class="rounded-t-md" />
+                                    <div>
+                                        <p class="text-center">{{ item.storyName }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </template>
-                </Listbox>
-            </div>
-            <div class="h-1/2">
-                <div>
-                    <p class="text-xl font-bold text-white">Tóp Truyện Chữ &#129512; &#128685; &#128293;</p>
-                </div>
-                <Listbox :options="dataTopTC.data" optionLabel="storyName" class="w-full">
-                    <template #option="slotProps">
-                        <div class="">
-                            <img :alt="slotProps.option.storyAuthor"
-                                :src="slotProps.option.coverImage"/>
-                            <div><p class="text-center">{{ slotProps.option.storyName }}</p></div>
+                        <div class="h-1/2">
+                            <div>
+                                <p class="text-xl font-bold">Tóp Truyện Chữ &#129512; &#128685; &#128293;</p>
+                            </div>
+                            <div class="h-5/6 bg-white border border-solid border-slate-200 rounded-md overflow-hidden overflow-y-auto">
+                                <div class="m-3 hover:shadow-md hover:rounded-md" v-for="item in dataTopTC.data" :key="item">
+                                    <img :alt="item.storyAuthor" :src="item.coverImage" class="rounded-t-md" />
+                                    <div>
+                                        <p class="text-center">{{ item.storyName }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </template>
-                </Listbox>
-            </div>
+                    </div>
+                </template>
+            </Card>
         </div>
     </div>
 </template>

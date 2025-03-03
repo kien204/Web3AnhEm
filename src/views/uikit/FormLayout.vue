@@ -1,121 +1,88 @@
-<script setup>
-import { ref } from 'vue';
-
-const dropdownItems = ref([
-    { name: 'Option 1', code: 'Option 1' },
-    { name: 'Option 2', code: 'Option 2' },
-    { name: 'Option 3', code: 'Option 3' }
-]);
-
-const dropdownItem = ref(null);
-</script>
-
 <template>
-    <Fluid>
-        <div class="flex flex-col md:flex-row gap-8">
-            <div class="md:w-1/2">
-                <div class="card flex flex-col gap-4">
-                    <div class="font-semibold text-xl">Vertical</div>
-                    <div class="flex flex-col gap-2">
-                        <label for="name1">Name</label>
-                        <InputText id="name1" type="text" />
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label for="email1">Email</label>
-                        <InputText id="email1" type="text" />
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label for="age1">Age</label>
-                        <InputText id="age1" type="text" />
-                    </div>
-                </div>
+    <div class="w-full min-h-screen flex flex-col items-center p-6">
+        <h2 class="text-3xl font-bold text-orange-600 mb-6">📚 Chọn Thể Loại Truyện 📚</h2>
 
-                <div class="card flex flex-col gap-4">
-                    <div class="font-semibold text-xl">Vertical Grid</div>
-                    <div class="flex flex-wrap gap-4">
-                        <div class="flex flex-col grow basis-0 gap-2">
-                            <label for="name2">Name</label>
-                            <InputText id="name2" type="text" />
-                        </div>
-                        <div class="flex flex-col grow basis-0 gap-2">
-                            <label for="email2">Email</label>
-                            <InputText id="email2" type="text" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="md:w-1/2">
-                <div class="card flex flex-col gap-4">
-                    <div class="font-semibold text-xl">Horizontal</div>
-                    <div class="grid grid-cols-12 gap-2">
-                        <label for="name3" class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0">Name</label>
-                        <div class="col-span-12 md:col-span-10">
-                            <InputText id="name3" type="text" />
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-12 gap-2">
-                        <label for="email3" class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0">Email</label>
-                        <div class="col-span-12 md:col-span-10">
-                            <InputText id="email3" type="text" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card flex flex-col gap-4">
-                    <div class="font-semibold text-xl">Inline</div>
-                    <div class="flex flex-wrap items-start gap-4">
-                        <div class="field">
-                            <label for="firstname1" class="sr-only">Firstname</label>
-                            <InputText id="firstname1" type="text" placeholder="Firstname" />
-                        </div>
-                        <div class="field">
-                            <label for="lastname1" class="sr-only">Lastname</label>
-                            <InputText id="lastname1" type="text" placeholder="Lastname" />
-                        </div>
-                        <Button label="Submit" :fluid="false"></Button>
-                    </div>
-                </div>
-                <div class="card flex flex-col gap-4">
-                    <div class="font-semibold text-xl">Help Text</div>
-                    <div class="flex flex-wrap gap-2">
-                        <label for="username">Username</label>
-                        <InputText id="username" type="text" />
-                        <small>Enter your username to reset your password.</small>
-                    </div>
-                </div>
+        <!-- Bộ lọc thể loại -->
+        <div class="p-4 rounded-md shadow-md w-full max-w-6xl">
+            <div class="flex flex-wrap gap-4 justify-center">
+                <button
+                    v-for="(genre, index) in allGenres"
+                    :key="index"
+                    @click="toggleGenre(genre)"
+                    :class="{ ' text-white border-blue-200': selectedGenres.includes(genre) }"
+                    class="px-4 py-2 border-1 border-orange-400 rounded-full hover:bg-orange-300 transition-all"
+                >
+                    {{ genre }}
+                </button>
             </div>
         </div>
 
-        <div class="flex mt-8">
-            <div class="card flex flex-col gap-4 w-full">
-                <div class="font-semibold text-xl">Advanced</div>
-                <div class="flex flex-col md:flex-row gap-4">
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="firstname2">Firstname</label>
-                        <InputText id="firstname2" type="text" />
-                    </div>
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="lastname2">Lastname</label>
-                        <InputText id="lastname2" type="text" />
-                    </div>
-                </div>
+        <!-- Nút xác nhận -->
+        <div class="mt-6">
+            <Button class="px-6 py-3 rounded-md text-lg font-semibold hover:bg-green-800 transition-all" @click="confirmSelection">🔍 Tìm Truyện</Button>
+        </div>
 
-                <div class="flex flex-wrap">
-                    <label for="address">Address</label>
-                    <Textarea id="address" rows="4" />
-                </div>
-
-                <div class="flex flex-col md:flex-row gap-4">
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="state">State</label>
-                        <Select id="state" v-model="dropdownItem" :options="dropdownItems" optionLabel="name" placeholder="Select One" class="w-full"></Select>
+        <!-- Danh sách truyện -->
+        <div v-if="filteredStories.length" class="w-full max-w-7xl p-6 mt-6 rounded-md shadow-lg">
+            <h3 class="text-2xl font-semibold">✨ Kết quả tìm kiếm:</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+                <div v-for="(story, index) in filteredStories" :key="index" class="border-1 border-slate-200 rounded-md p-4 shadow-md transition-all hover:scale-105">
+                    <div class="w-full h-40 flex items-center justify-center overflow-hidden">
+                        <img :src="story.coverImage" alt="Story Image" class="w-full h-full object-cover rounded-md" />
                     </div>
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="zip">Zip</label>
-                        <InputText id="zip" type="text" />
-                    </div>
+                    <h4 class="text-lg font-bold mt-3">{{ story.storyName }}</h4>
+                    <p class="text-sm">{{ story.typeDetailStory }}</p>
                 </div>
             </div>
         </div>
-    </Fluid>
+    </div>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            allGenres: [],
+            selectedGenres: [],
+            filteredStories: []
+        };
+    },
+    methods: {
+        async fetchGenres() {
+            try {
+                const response = await fetch('http://10.15.250.41:5041/api/Story/get-type');
+                const data = await response.json();
+                this.allGenres = data.data;
+            } catch (error) {
+                console.error('Lỗi khi lấy danh sách thể loại:', error);
+            }
+        },
+        async confirmSelection() {
+            if (this.selectedGenres.length === 0) return;
+
+            // Encode thể loại đúng định dạng API yêu cầu
+            const genreQuery = this.selectedGenres.map((genre) => encodeURIComponent(genre)).join('%2C');
+
+            try {
+                const response = await fetch(`http://10.15.250.41:5041/api/Story/filter-story/${genreQuery}`);
+                const data = await response.json();
+
+                console.log('Dữ liệu API trả về:', data);
+                this.filteredStories = data.data || data;
+            } catch (error) {
+                console.error('Lỗi khi lấy danh sách truyện:', error);
+            }
+        },
+        toggleGenre(genre) {
+            if (this.selectedGenres.includes(genre)) {
+                this.selectedGenres = this.selectedGenres.filter((g) => g !== genre);
+            } else {
+                this.selectedGenres.push(genre);
+            }
+        }
+    },
+    mounted() {
+        this.fetchGenres();
+    }
+};
+</script>
