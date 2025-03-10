@@ -1,88 +1,83 @@
 <template>
-    <div class="w-full min-h-screen flex flex-col items-center p-6">
+    <div class="w-full flex flex-col items-center p-6">
         <h2 class="text-3xl font-bold text-orange-600 mb-6">📚 Chọn Thể Loại Truyện 📚</h2>
 
-        <!-- Bộ lọc thể loại -->
-        <div class="p-4 rounded-md shadow-md w-full max-w-6xl">
-            <div class="flex flex-wrap gap-4 justify-center">
-                <button
-                    v-for="(genre, index) in allGenres"
-                    :key="index"
-                    @click="toggleGenre(genre)"
-                    :class="{ ' text-white border-blue-200': selectedGenres.includes(genre) }"
-                    class="px-4 py-2 border-1 border-orange-400 rounded-full hover:bg-orange-300 transition-all"
-                >
-                    {{ genre }}
-                </button>
+        <div class="card">
+            <div class=" flex justify-center" v-for="item in allGenres" :key="item">
+                <SelectButton v-model="selectedGenres" :options="item" multiple aria-labelledby="multiple" />
             </div>
         </div>
 
-        <!-- Nút xác nhận -->
-        <div class="mt-6">
-            <Button class="px-6 py-3 rounded-md text-lg font-semibold hover:bg-green-800 transition-all" @click="confirmSelection">🔍 Tìm Truyện</Button>
-        </div>
+    </div>
 
-        <!-- Danh sách truyện -->
-        <div v-if="filteredStories.length" class="w-full max-w-7xl p-6 mt-6 rounded-md shadow-lg">
-            <h3 class="text-2xl font-semibold">✨ Kết quả tìm kiếm:</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
-                <div v-for="(story, index) in filteredStories" :key="index" class="border-1 border-slate-200 rounded-md p-4 shadow-md transition-all hover:scale-105">
-                    <div class="w-full h-40 flex items-center justify-center overflow-hidden">
-                        <img :src="story.coverImage" alt="Story Image" class="w-full h-full object-cover rounded-md" />
+    <!-- Nút xác nhận -->
+    <div class="flex justify-center">
+        <Button class="rounded-md text-lg font-semibold hover:bg-green-800 transition-all" @click="confirmSelection">🔍
+            Tìm Truyện</Button>
+    </div>
+
+    <!-- Danh sách truyện -->
+    <div v-if="filteredStories.data" class="w-full max-w-7xl p-6 mt-6 rounded-md shadow-lg">
+        <h3 class="text-2xl font-semibold">✨ Kết quả tìm kiếm:</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4 overflow-hidden overflow-y-auto">
+            <div v-for="(story, index) in filteredStories.data" :key="index"
+                class="border-1 border-slate-200 rounded-md p-4 shadow-md transition-all hover:scale-105">
+                <div class="w-full h-40 flex items-center justify-center overflow-hidden">
+                    <img :src="story.coverImage" alt="Story Image" class="w-full h-full object-cover rounded-md" />
+                </div>
+                <h4 class="text-lg text-center font-bold mt-3">{{ story.storyName }}</h4>
+                <p class="text-center">{{ story.description.length > 35 ? story.description.substr(0, 30) + ' ...' :
+                    story.description }}</p>
+
+                <div class="flex justify-center mt-3">
+                    <div class="flex gap-5">
+                        <Button text raised label="Chi tiết" @click="pushRoute(story.id)" severity="info" />
+                        <Button text raised severity="help" @click="pushView(story.id)" label="Xem ngay" />
                     </div>
-                    <h4 class="text-lg font-bold mt-3">{{ story.storyName }}</h4>
-                    <p class="text-sm">{{ story.typeDetailStory }}</p>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            allGenres: [],
-            selectedGenres: [],
-            filteredStories: []
-        };
-    },
-    methods: {
-        async fetchGenres() {
-            try {
-                const response = await fetch('http://10.15.250.41:5041/api/Story/get-type');
-                const data = await response.json();
-                this.allGenres = data.data;
-            } catch (error) {
-                console.error('Lỗi khi lấy danh sách thể loại:', error);
-            }
-        },
-        async confirmSelection() {
-            if (this.selectedGenres.length === 0) return;
+<script setup>
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
 
-            // Encode thể loại đúng định dạng API yêu cầu
-            const genreQuery = this.selectedGenres.map((genre) => encodeURIComponent(genre)).join('%2C');
+const allGenres = ref([]);
+const selectedGenres = ref([]);
+const filteredStories = ref([]);
 
-            try {
-                const response = await fetch(`http://10.15.250.41:5041/api/Story/filter-story/${genreQuery}`);
-                const data = await response.json();
-
-                console.log('Dữ liệu API trả về:', data);
-                this.filteredStories = data.data || data;
-            } catch (error) {
-                console.error('Lỗi khi lấy danh sách truyện:', error);
-            }
-        },
-        toggleGenre(genre) {
-            if (this.selectedGenres.includes(genre)) {
-                this.selectedGenres = this.selectedGenres.filter((g) => g !== genre);
-            } else {
-                this.selectedGenres.push(genre);
-            }
+const fetchGenres = async () => {
+    try {
+        const response = await fetch('http://10.15.82.73:5041/api/Story/get-type');
+        const data = await response.json();
+        // allGenres.value = data.data;
+        for (let i = 0; i < data.data.length; i += 7) {
+            allGenres.value.push(data.data.slice(i, i + 7));
         }
-    },
-    mounted() {
-        this.fetchGenres();
+    } catch (error) {
+        console.error('Lỗi khi lấy danh sách thể loại:', error);
     }
 };
+
+const confirmSelection = async () => {
+    try {
+        let uri = "";
+        filteredStories.value = [];
+        if (selectedGenres.value.length != 0) {
+            uri = encodeURIComponent(selectedGenres.value.join(","));
+        } else {
+            return;
+        }
+        const response = await axios.get(`http://10.15.82.73:5041/api/Story/filter-story/${uri}`);
+        filteredStories.value = await response.data;
+    } catch (error) {
+        console.error('Lỗi khi lấy danh sách thể loại:', error);
+    }
+}
+
+onMounted(async () => {
+    await fetchGenres();
+});
 </script>

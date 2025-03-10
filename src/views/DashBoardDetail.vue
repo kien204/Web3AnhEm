@@ -18,25 +18,23 @@
                     <p><strong>Thêm ngày:</strong> {{ formatDate(story.createdAt) }}</p>
                     <p v-if="story.updatedAt"><strong>Updated At:</strong> {{ formatDate(story.updatedAt) }}</p>
 
-                    <div class="border border-solid border-slate-200 rounded-md overflow-hidden overflow-y-auto" :class="!checkMore ? 'h-[100px]' : 'h-[250px]'">
+                    <div class="border border-solid border-slate-200 rounded-md overflow-hidden overflow-y-auto"
+                        :class="!checkMore ? 'h-[100px]' : 'h-[250px]'">
                         <div class="flex flex-col gap-3 m-2">
                             <div class="" v-for="item in dataAll.data" :key="item">
-                                <div class="border border-solid border-slate-200 hover:shadow-md rounded-md cursor-pointer" @click="pushView(item.detailId)">
+                                <div class="border border-solid border-slate-200 hover:shadow-md rounded-md cursor-pointer"
+                                    @click="pushView(item.detailId)">
                                     <p class="p-4">{{ item.chapter }}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <Button
-                        text
-                        :label="!checkMore ? 'Xem thêm' : 'Thu gọn'"
-                        @click="
-                            () => {
-                                checkMore = !checkMore;
-                                console.log(checkMore);
-                            }
-                        "
-                    />
+                    <Button text :label="!checkMore ? 'Xem thêm' : 'Thu gọn'" @click="
+                        () => {
+                            checkMore = !checkMore;
+                            console.log(checkMore);
+                        }
+                    " />
                 </div>
             </div>
         </div>
@@ -64,7 +62,7 @@ const pushView = (id) => {
 
 const getAllDetail = async (id) => {
     try {
-        const response = await axios.get(`http://10.15.250.41:5041/api/DetailStory/get-chapter/${id}`);
+        const response = await axios.get(`http://10.15.82.73/:5041/api/DetailStory/get-chapter/${id}`);
         dataAll.value = await response.data;
         // route.push(`view-story/${data.data[0].detailId}`);
     } catch (e) {
@@ -74,7 +72,7 @@ const getAllDetail = async (id) => {
 
 const getStory = async (id) => {
     try {
-        const res = await axios.get(`http://10.15.250.41:5041/api/Story/getAll?id=${id}`);
+        const res = await axios.get(`http://10.15.82.73/:5041/api/Story/getAll?id=${id}`);
         story.value = await res.data.data[0];
     } catch (e) {
         console.log(e);
@@ -88,5 +86,4 @@ onMounted(() => {
 });
 </script>
 
-<style>
-</style>
+<style></style>

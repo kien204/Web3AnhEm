@@ -43,14 +43,15 @@ import { createRouter, createWebHistory } from 'vue-router';
                             path: '/view-story/:id',
                             name: 'view',
                             component: () => import('@/views/ViewStory.vue')
-                        }
+                        },
+                        {
+                            path: '/uikit/formlayout',
+                            name: 'formlayout',
+                            component: () => import('@/views/uikit/FormLayout.vue')
+                        },
                     ]
                 },
                 {
-                    path: '/uikit/formlayout',
-                    name: 'formlayout',
-                    component: () => import('@/views/uikit/FormLayout.vue')
-                },{
                     path: '/view/login',
                     name: 'login',
                     component: () => import('@/admin/view/Login.vue')
