@@ -59,7 +59,7 @@ onMounted(async () => {
 });
 
 // const url = 'http://localhost:8081/api/products';
-const url = 'http://10.15.250.41:5041/api';
+const url = 'http://10.15.82.73:5041/api';
 
 const chapterterData = ref([]);
 const storyList = ref([]);
@@ -99,7 +99,7 @@ const validateForm = () => {
     errors.value.coverImageForm = !coverImageForm.value;
     errors.value.descriptionForm = !descriptionForm.value;
     errors.value.typeStoryForm = !typeStoryForm.value;
-    errors.value.typeDetailStoryForm = typeDetailStoryForm.value.length === 0;
+    errors.value.typeDetailStoryForm = typeDetailStoryForm.value.length + AddTypeDetailStoryForm.value.length === 0;
 
     return !Object.values(errors.value).includes(true);
 };
@@ -482,7 +482,7 @@ const filterschapterter = ref({
                 <template #expansion="slotProps">
                     <div class="p-3">
                         <h5>Danh sách chương - {{ slotProps.data.storyName }}</h5>
-                        <DataTable :value="getchaptertersForStory(slotProps.data.id)" responsiveLayout="scroll" :globalFilterFields="['detailID', 'detailID']" :filters="filterschapterter">
+                        <DataTable :value="getchaptertersForStory(slotProps.data.id)" responsiveLayout="scroll" :globalFilterFields="['sttName', 'detailID']" :filters="filterschapterter">
                             <template #header>
                                 <IconField iconPosition="left">
                                     <InputIcon>
@@ -491,7 +491,7 @@ const filterschapterter = ref({
                                     <InputText v-model="filterschapterter.global.value" placeholder="Nhập mã hoặc tên chương" />
                                     <Button label="Thêm chương mới" icon="pi pi-plus" severity="success" class="ml-2" @click="codeChapterData(slotProps.data.id)" />
                                 </IconField>
-                            </template>
+                            </template> 
                             <Column field="detailID" header="Mã Chương" />
                             <Column field="sttName" header="Tên Chương" />
 
@@ -714,10 +714,7 @@ const filterschapterter = ref({
         <Dialog v-model:visible="dialogdeleteChapter" :style="{ width: '450px' }" header="Xóa chương" :modal="true">
             <div class="confirmation-content">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                <span v-if="clouddeleteChapter"
-                    >Bạn chắc chắn muốn xóa chương <b>{{ clouddeleteChapter.sttName }}</b
-                    >?</span
-                >
+                <span v-if="clouddeleteChapter">Bạn chắc chắn muốn xóa chương <b>{{ clouddeleteChapter.sttName }}</b>?</span>
             </div>
             <template #footer>
                 <Button label="No" icon="pi pi-times" text @click="dialogdeleteChapter = false" />
