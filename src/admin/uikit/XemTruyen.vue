@@ -1,10 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { onMounted, ref } from 'vue';
 
 // Tạo ref cho mảng chứa các đối tượng truyện
 const truyenList = ref([]);
-const apiUrl = 'http://10.15.89.56:5041/api/Story/getAll'; // Địa chỉ API của bạn
+const apiUrl = 'http://localhost:5041/api/Story/getAll'; // Địa chỉ API của bạn
 
 const getTruyen = async () => {
     try {

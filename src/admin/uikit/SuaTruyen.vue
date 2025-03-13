@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue';
-import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
+import { useToast } from 'primevue/usetoast';
+import { ref } from 'vue';
 
 const truyenList = ref([]);
 const newTruyen = ref({
@@ -25,7 +25,7 @@ const editTruyen = ref({
 });
 const deleteTruyenId = ref('');
 const toast = useToast();
-const apiUrl = 'http://10.15.169.9:5041/api/Story';
+const apiUrl = 'http://localhost:5041/api/Story';
 // const apiUrl = 'http://10.15.166.140:8081/api/products';
 
 const show = (check, statu, content) => {
@@ -128,7 +128,8 @@ const deleteTruyen = async () => {
             <input v-model="newTruyen.typeDetailStory" type="text" class="inputfield w-full" />
         </div>
         <div class="text-center">
-            <button @click="addTruyen" class="p-button p-component p-button-success bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-800">Thêm</button>
+            <button @click="addTruyen"
+                class="p-button p-component p-button-success bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-800">Thêm</button>
         </div>
 
         <h2 class="text-2xl font-bold mt-20 mb-4 text-center">Sửa Truyện</h2>
@@ -165,7 +166,8 @@ const deleteTruyen = async () => {
             <input v-model="editTruyen.typeDetailStory" type="text" class="inputfield w-full" />
         </div>
         <div class="text-center">
-            <button @click="updateTruyen" class="p-button p-component p-button-success bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-900">Sửa</button>
+            <button @click="updateTruyen"
+                class="p-button p-component p-button-success bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-900">Sửa</button>
         </div>
 
         <h2 class="text-2xl font-bold mt-20 mb-4 text-center">Xóa Truyện</h2>
@@ -174,7 +176,8 @@ const deleteTruyen = async () => {
             <input v-model="deleteTruyenId" type="text" class="inputfield w-full" />
         </div>
         <div class="text-center">
-            <button @click="deleteTruyen" class="p-button p-component p-button-danger bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-800">Xóa</button>
+            <button @click="deleteTruyen"
+                class="p-button p-component p-button-danger bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-800">Xóa</button>
         </div>
     </div>
 </template>

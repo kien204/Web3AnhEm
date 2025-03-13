@@ -29,9 +29,7 @@ const storyList = ref([
         typeDetailStory: 'Hành động, Hài hước'
     }
 ]);
-const typeDetail = ref([
-   'sieu nhan','Hành động', 'Hài hước'
-]);
+const typeDetail = ref(['sieu nhan', 'Hành động', 'Hài hước']);
 
 // Form fields
 const storyNameForm = ref('');
@@ -161,7 +159,7 @@ const addStory = async () => {
             imgCover: coverImageForm.value,
             description: descriptionForm.value,
             typeStory: typeStoryForm.value,
-            typeDetailStory: typeDetailStoryForm.value.join(',') + "," + AddTypeDetailStoryForm.value
+            typeDetailStory: typeDetailStoryForm.value.join(',') + ',' + AddTypeDetailStoryForm.value
         };
         await axios.post(`${url}/Story/inserts`, newStory, { headers: { Authorization: `Bearer ${token}` } });
         await getAllStory();
@@ -175,16 +173,15 @@ const addStory = async () => {
 };
 
 const editStoryData = (story) => {
-    cloudEditStory.value = story;    
+    cloudEditStory.value = story;
     dialogEditStory.value = true;
     storyNameForm.value = cloudEditStory.value.storyName;
     storyAuthorForm.value = cloudEditStory.value.storyAuthor;
     coverImageForm.value = cloudEditStory.value.coverImage;
     descriptionForm.value = cloudEditStory.value.description;
-    typeDetailStoryForm.value = cloudEditStory.value.typeDetailStory.split(",").map(item => item.trim()) || [];    
+    typeDetailStoryForm.value = cloudEditStory.value.typeDetailStory.split(',').map((item) => item.trim()) || [];
 };
 
-// Hàm sửa truyện
 const editStory = async () => {
     if (!validateEditStoryForm()) return showError('Vui lòng nhập đầy đủ thông tin');
     try {
@@ -194,7 +191,7 @@ const editStory = async () => {
             coverImage: coverImageForm.value,
             description: descriptionForm.value,
             storyAuthor: storyAuthorForm.value,
-            typeDetailStory: typeDetailStoryForm.value.join(',') + "," + AddTypeDetailStoryForm.value
+            typeDetailStory: typeDetailStoryForm.value.join(',') + ',' + AddTypeDetailStoryForm.value
         };
         await axios.put(`${url}/Story/update-story`, updatedStory, { headers: { Authorization: `Bearer ${token}` } });
         resetStoryForm();
@@ -253,7 +250,6 @@ const editChapterData = (chapter) => {
     sttNameForm.value = chapter.sttName;
 };
 
-// Hàm sửa truyện
 const editChapter = async () => {
     if (!validateChapterForm()) return showError('Vui lòng nhập đầy đủ thông tin');
     try {
@@ -277,7 +273,6 @@ const deleteChapterData = (chapter) => {
     dialogdeleteChapter.value = true;
 };
 
-// Hàm xác nhận xóa truyện
 const deleteChapter = async () => {
     try {
         await axios.delete(`${url}/DetailStory/delete-detailstory/${clouddeleteChapter.value.detailID}`, {
@@ -304,7 +299,6 @@ const codeChapterData = (id) => {
     cloudCodeStory.value = id;
     dialogaddChapter.value = true;
 };
-
 </script>
 
 <template>
@@ -337,7 +331,7 @@ const codeChapterData = (id) => {
                         <InputText v-model="filtersStory.global.value" placeholder="Nhập mã hoặc tên truyện" />
                     </IconField>
                 </template>
-                <Column expander style="width: 2rem"/>
+                <Column expander style="width: 2rem" />
                 <Column field="storyCode" header="Mã Truyện" />
                 <Column field="storyName" header="Tên Truyện" />
                 <Column field="storyAuthor" header="Tác Giả" />
@@ -347,7 +341,7 @@ const codeChapterData = (id) => {
                     </template>
                 </Column>
                 <Column field="typeStory" header="Thể Loại" />
-                <Column field="typeDetailStory" header="Chi Tiết Thể Loại"/>
+                <Column field="typeDetailStory" header="Chi Tiết Thể Loại" />
                 <Column :exportable="false" style="min-width: 8rem">
                     <template #body="slotProps">
                         <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editStoryData(slotProps.data)" />
@@ -368,7 +362,7 @@ const codeChapterData = (id) => {
                                     <InputText v-model="filterschapterter.global.value" placeholder="Nhập mã hoặc tên chương" />
                                     <Button label="Thêm chương mới" icon="pi pi-plus" severity="success" class="ml-2" @click="codeChapterData(slotProps.data.id)" />
                                 </IconField>
-                            </template> 
+                            </template>
                             <Column field="id" header="Mã Chương" />
                             <Column field="sttName" header="Tên Chương" />
 
@@ -426,7 +420,7 @@ const codeChapterData = (id) => {
                     </div>
                     <div class="field">
                         <InputText id="AddTypeDetailStoryForm" class="w-full mb-5" />
-                    </div>                
+                    </div>
                 </div>
                 <div class="flex justify-content-end gap-2">
                     <Button
@@ -465,7 +459,7 @@ const codeChapterData = (id) => {
                     <label for="descriptionForm" class="text-lg">Mô Tả</label>
                     <Textarea id="descriptionForm" v-model="descriptionForm" rows="3" class="w-full" :class="{ 'p-invalid': errors.descriptionForm }" />
                 </div>
-                
+
                 <div class="field">
                     <label for="typeDetail" class="text-lg">Chi Tiết Thể Loại</label>
                     <div class="flex flex-wrap">
@@ -515,22 +509,18 @@ const codeChapterData = (id) => {
         <Dialog v-model:visible="dialogaddChapter" modal header="Thêm chương" :style="{ width: '45%' }" @hide="resetChapterForm">
             <div class="p-fluid">
                 <div class="field">
-                    <label for="detailIDForm" class="text-lg">Mã chương</label>
-                    <InputText id="detailIDForm" v-model="detailIDForm" class="w-full" :class="{ 'p-invalid': errors.detailIDForm }" />
-                </div>
-                <div class="field">
                     <label for="sttNameForm" class="text-lg">Chương</label>
                     <InputText id="sttNameForm" v-model="sttNameForm" class="w-full" :class="{ 'p-invalid': errors.sttNameForm }" />
                 </div>
 
                 <div class="mb-7 mt-7">
-                    <FileUpload 
-                        id="fileForm" 
-                        name="tải file" 
-                        mode="basic" 
+                    <FileUpload
+                        id="fileForm"
+                        name="tải file"
+                        mode="basic"
                         :accept="checkTypeStory(cloudeditChapter.id) ? 'text/plain' : 'application/pdf'"
-                        :chooseLabel="checkTypeStory(cloudeditChapter.id) ? 'Chọn tệp TXT' : 'Chọn tệp PDF'" 
-                        :maxFileSize="10000000" 
+                        :chooseLabel="checkTypeStory(cloudeditChapter.id) ? 'Chọn tệp TXT' : 'Chọn tệp PDF'"
+                        :maxFileSize="10000000"
                         @select="onFileSelect"
                         class="w-full p-2 border border-gray-300 rounded-lg"
                     />
@@ -558,22 +548,18 @@ const codeChapterData = (id) => {
         <Dialog v-model:visible="dialogEditChapter" modal header="Chỉnh sửa Truyện" :style="{ width: '45%' }" @hide="resetChapterForm">
             <div class="p-fluid">
                 <div class="field">
-                    <label for="detailIDForm" class="text-lg">Mã chương</label>
-                    <InputText id="detailIDForm" v-model="detailIDForm" class="w-full" :class="{ 'p-invalid': errors.detailIDForm }" />
-                </div>
-                <div class="field">
                     <label for="sttNameForm" class="text-lg">Chương</label>
                     <InputText id="sttNameForm" v-model="sttNameForm" class="w-full" :class="{ 'p-invalid': errors.sttNameForm }" />
                 </div>
 
                 <div class="mb-7 mt-7">
-                    <FileUpload 
-                        id="fileForm" 
-                        name="tải file" 
-                        mode="basic" 
+                    <FileUpload
+                        id="fileForm"
+                        name="tải file"
+                        mode="basic"
                         :accept="checkTypeStory(cloudeditChapter.id) ? 'text/plain' : 'application/pdf'"
-                        :chooseLabel="checkTypeStory(cloudeditChapter.id) ? 'Chọn tệp TXT' : 'Chọn tệp PDF'" 
-                        :maxFileSize="10000000" 
+                        :chooseLabel="checkTypeStory(cloudeditChapter.id) ? 'Chọn tệp TXT' : 'Chọn tệp PDF'"
+                        :maxFileSize="10000000"
                         @select="onFileSelect"
                         class="w-full p-2 border border-gray-300 rounded-lg"
                     />
@@ -601,7 +587,10 @@ const codeChapterData = (id) => {
         <Dialog v-model:visible="dialogdeleteChapter" :style="{ width: '450px' }" header="Xóa chương" :modal="true">
             <div class="confirmation-content">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                <span v-if="clouddeleteChapter">Bạn chắc chắn muốn xóa chương <b>{{ clouddeleteChapter.sttName }}</b>?</span>
+                <span v-if="clouddeleteChapter"
+                    >Bạn chắc chắn muốn xóa chương <b>{{ clouddeleteChapter.sttName }}</b
+                    >?</span
+                >
             </div>
             <template #footer>
                 <Button label="No" icon="pi pi-times" text @click="dialogdeleteChapter = false" />

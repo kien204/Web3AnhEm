@@ -1,4 +1,3 @@
-
 <template>
     <div class="card flex justify-content-center">
         <Chart type="pie" :data="chartData" :options="chartOptions" class="w-full md:w-30rem" />
@@ -6,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted, ref } from "vue";
 
 onMounted(() => {
     chartData.value = setChartData();
