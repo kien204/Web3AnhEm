@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
+import { useToast } from 'primevue/usetoast';
+import { onMounted, ref } from 'vue';
 
 const toast = useToast();
 
@@ -59,7 +59,7 @@ onMounted(async () => {
 });
 
 // const url = 'http://localhost:8081/api/products';
-const url = 'http://10.15.82.73:5041/api';
+const url = 'http://localhost:5041/api';
 
 const chapterterData = ref([]);
 const storyList = ref([]);
@@ -167,7 +167,7 @@ const addStory = async () => {
 
 // Hàm gọi dialog sửa truyện và chuyền data dòng đó vào
 const editStoryData = (prod) => {
-    cloudEditStory.value = prod;    
+    cloudEditStory.value = prod;
     dialogEditStory.value = true;
     storyNameForm.value = cloudEditStory.value.storyName;
     storyAuthorForm.value = cloudEditStory.value.storyAuthor;
@@ -195,8 +195,8 @@ const editStory = async () => {
                 typeDetailStory: typeDetailStoryForm.join(',') + "," + AddTypeDetailStoryForm.value
             };
             console.log(editStoryData);
-            
-            await axios.put(url + `/Story/update-story`, editStoryData, 
+
+            await axios.put(url + `/Story/update-story`, editStoryData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}` // Thêm token vào header
@@ -219,7 +219,7 @@ const editStory = async () => {
 const deleteStory = async () => {
     try {
         const storyCodeDele = cloudDeleteStory.value.id;
-        
+
         await axios.delete(url + `/Story/delete-story/${storyCodeDele}`,
             {
                 headers: {
@@ -302,7 +302,7 @@ const addChapter = async () => {
                 typeStory: typeStoryForm.value,
                 typeDetailStory: typeDetailStoryForm.value + arr
             };
-            
+
             await axios.post(url + '/add', newStoryData);
             await getAllStory();
             resetFormChapter();
@@ -350,7 +350,7 @@ const editChapter = async () => {
                 typeDetailStory: typeDetailStoryForm.value + AddTypeDetailStoryForm.value
             };
             console.log(editStoryData.typeDetailStory);
-            
+
             const chapterCodeEdit = cloudeditChapter.value.detailID;
             await axios.put(url + `/sua/${chapterCodeEdit}`, editStoryData);
             const index = chapterList.value.findIndex((chapter) => chapter.detailID === cloudeditChapter.value.detailID);
@@ -431,23 +431,18 @@ const filterschapterter = ref({
         <div class="card">
             <Toolbar class="mb-4">
                 <template #start>
-                    <Button label="Thêm truyện mới" icon="pi pi-plus" severity="success" class="mr-2" @click="dialogAddStory = true" />
+                    <Button label="Thêm truyện mới" icon="pi pi-plus" severity="success" class="mr-2"
+                        @click="dialogAddStory = true" />
                     <Button icon="pi pi-refresh" rounded raised @click="getAllStory" />
                 </template>
             </Toolbar>
 
-            <DataTable
-                :value="storyList"
-                dataKey="storyCode"
-                :paginator="true"
-                :globalFilterFields="['storyName', 'storyCode']"
-                :filters="filtersStory"
-                :rows="10"
+            <DataTable :value="storyList" dataKey="storyCode" :paginator="true"
+                :globalFilterFields="['storyName', 'storyCode']" :filters="filtersStory" :rows="10"
                 v-model:expandedRows="expandedRows"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Hiển thị từ {first} đến {last} trong {totalRecords} câu truyện"
-            >
+                currentPageReportTemplate="Hiển thị từ {first} đến {last} trong {totalRecords} câu truyện">
                 <template #header>
                     <IconField iconPosition="left">
                         <InputIcon>
@@ -456,13 +451,14 @@ const filterschapterter = ref({
                         <InputText v-model="filtersStory.global.value" placeholder="Nhập mã hoặc tên truyện" />
                     </IconField>
                 </template>
-                <Column expander style="width: 2rem"/>
+                <Column expander style="width: 2rem" />
                 <Column field="storyCode" header="Mã Truyện" />
                 <Column field="storyName" header="Tên Truyện" />
                 <Column field="storyAuthor" header="Tác Giả" />
                 <Column header="Ảnh Bìa">
                     <template #body="slotProps">
-                        <img :src="slotProps.data.coverImage" :alt="slotProps.data.storyName" class="border-round" style="width: 64px" />
+                        <img :src="slotProps.data.coverImage" :alt="slotProps.data.storyName" class="border-round"
+                            style="width: 64px" />
                     </template>
                 </Column>
                 <Column field="typeStory" header="Thể Loại" />
@@ -473,8 +469,10 @@ const filterschapterter = ref({
                 </Column>
                 <Column :exportable="false" style="min-width: 8rem">
                     <template #body="slotProps">
-                        <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editStoryData(slotProps.data)" />
-                        <Button icon="pi pi-trash" outlined rounded severity="danger" @click="deleteStoryData(slotProps.data)" />
+                        <Button icon="pi pi-pencil" outlined rounded class="mr-2"
+                            @click="editStoryData(slotProps.data)" />
+                        <Button icon="pi pi-trash" outlined rounded severity="danger"
+                            @click="deleteStoryData(slotProps.data)" />
                     </template>
                 </Column>
 
@@ -482,23 +480,28 @@ const filterschapterter = ref({
                 <template #expansion="slotProps">
                     <div class="p-3">
                         <h5>Danh sách chương - {{ slotProps.data.storyName }}</h5>
-                        <DataTable :value="getchaptertersForStory(slotProps.data.id)" responsiveLayout="scroll" :globalFilterFields="['sttName', 'detailID']" :filters="filterschapterter">
+                        <DataTable :value="getchaptertersForStory(slotProps.data.id)" responsiveLayout="scroll"
+                            :globalFilterFields="['sttName', 'detailID']" :filters="filterschapterter">
                             <template #header>
                                 <IconField iconPosition="left">
                                     <InputIcon>
                                         <i class="pi pi-search" />
                                     </InputIcon>
-                                    <InputText v-model="filterschapterter.global.value" placeholder="Nhập mã hoặc tên chương" />
-                                    <Button label="Thêm chương mới" icon="pi pi-plus" severity="success" class="ml-2" @click="codeChapterData(slotProps.data.id)" />
+                                    <InputText v-model="filterschapterter.global.value"
+                                        placeholder="Nhập mã hoặc tên chương" />
+                                    <Button label="Thêm chương mới" icon="pi pi-plus" severity="success" class="ml-2"
+                                        @click="codeChapterData(slotProps.data.id)" />
                                 </IconField>
-                            </template> 
+                            </template>
                             <Column field="detailID" header="Mã Chương" />
                             <Column field="sttName" header="Tên Chương" />
 
                             <Column :exportable="false" style="min-width: 8rem">
                                 <template #body="slotProps">
-                                    <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editStoryData(slotProps.data)" />
-                                    <Button icon="pi pi-trash" outlined rounded severity="danger" @click="deleteStoryData(slotProps.data)" />
+                                    <Button icon="pi pi-pencil" outlined rounded class="mr-2"
+                                        @click="editStoryData(slotProps.data)" />
+                                    <Button icon="pi pi-trash" outlined rounded severity="danger"
+                                        @click="deleteStoryData(slotProps.data)" />
                                 </template>
                             </Column>
                         </DataTable>
@@ -508,34 +511,42 @@ const filterschapterter = ref({
         </div>
 
         <!-- dialog thêm truyện mới -->
-        <Dialog v-model:visible="dialogAddStory" modal header="Thêm Truyện" :style="{ width: '45%' }" @hide="resetFormStory">
+        <Dialog v-model:visible="dialogAddStory" modal header="Thêm Truyện" :style="{ width: '45%' }"
+            @hide="resetFormStory">
             <div class="p-fluid">
                 <div class="field">
                     <label for="storyNameForm" class="text-lg">Tên Truyện</label>
-                    <InputText id="storyNameForm" v-model="storyNameForm" class="w-full" :class="{ 'p-invalid': errors.storyNameForm }" />
+                    <InputText id="storyNameForm" v-model="storyNameForm" class="w-full"
+                        :class="{ 'p-invalid': errors.storyNameForm }" />
                 </div>
                 <div class="field">
                     <label for="storyCodeForm" class="text-lg">Mã Truyện</label>
-                    <InputText id="storyCodeForm" v-model="storyCodeForm" class="w-full" :class="{ 'p-invalid': errors.storyCodeForm }" />
+                    <InputText id="storyCodeForm" v-model="storyCodeForm" class="w-full"
+                        :class="{ 'p-invalid': errors.storyCodeForm }" />
                 </div>
                 <div class="field">
                     <label for="storyAuthorForm" class="text-lg">Tác Giả</label>
-                    <InputText id="storyAuthorForm" v-model="storyAuthorForm" class="w-full" :class="{ 'p-invalid': errors.storyAuthorForm }" />
+                    <InputText id="storyAuthorForm" v-model="storyAuthorForm" class="w-full"
+                        :class="{ 'p-invalid': errors.storyAuthorForm }" />
                 </div>
                 <div class="field">
                     <label for="coverImage" class="text-lg">Ảnh Bìa</label>
-                    <InputText id="coverImageForm" v-model="coverImageForm" class="w-full" :class="{ 'p-invalid': errors.coverImageForm }" />
+                    <InputText id="coverImageForm" v-model="coverImageForm" class="w-full"
+                        :class="{ 'p-invalid': errors.coverImageForm }" />
                 </div>
                 <div class="field">
                     <label for="descriptionForm" class="text-lg">Mô Tả</label>
-                    <Textarea id="descriptionForm" v-model="descriptionForm" rows="3" class="w-full" :class="{ 'p-invalid': errors.descriptionForm }" />
+                    <Textarea id="descriptionForm" v-model="descriptionForm" rows="3" class="w-full"
+                        :class="{ 'p-invalid': errors.descriptionForm }" />
                 </div>
                 <div class="field">
                     <label for="typeStoryForm" class="text-lg">Thể Loại</label>
                     <div class="flex align-items-center mb-2">
-                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTT" name="typeStory" value="TT" v-model="typeStoryForm" />
+                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTT"
+                            name="typeStory" value="TT" v-model="typeStoryForm" />
                         <label for="typeStoryTT" class="ml-2 mr-6">TT</label>
-                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTC" name="typeStory" value="TC" v-model="typeStoryForm" />
+                        <RadioButton :class="{ 'p-invalid': errors.typeStoryForm }" inputId="typeStoryTC"
+                            name="typeStory" value="TC" v-model="typeStoryForm" />
                         <label for="typeStoryTC" class="ml-2">TC</label>
                     </div>
                 </div>
@@ -543,34 +554,30 @@ const filterschapterter = ref({
                     <label for="typeDetail" class="text-lg">Chi Tiết Thể Loại</label>
                     <div class="flex flex-wrap">
                         <div v-for="item in typeDetail" :key="item" class="flex align-items-center mb-2 mr-4">
-                            <Checkbox :class="{ 'p-invalid': errors.typeDetailStoryForm }" v-model="typeDetailStoryForm" :value="item" />
+                            <Checkbox :class="{ 'p-invalid': errors.typeDetailStoryForm }" v-model="typeDetailStoryForm"
+                                :value="item" />
                             <label class="ml-2">{{ item }}</label>
                         </div>
                     </div>
                     <div class="field">
                         <InputText id="AddTypeDetailStoryForm" class="w-full mb-5" />
-                    </div>                
+                    </div>
                 </div>
                 <div class="flex justify-content-end gap-2">
-                    <Button
-                        type="button"
-                        label="Hủy"
-                        icon="pi pi-times"
-                        class="p-button-secondary"
-                        @click="
-                            () => {
-                                resetFormStory();
-                                dialogAddStory = false;
-                            }
-                        "
-                    />
+                    <Button type="button" label="Hủy" icon="pi pi-times" class="p-button-secondary" @click="
+                        () => {
+                            resetFormStory();
+                            dialogAddStory = false;
+                        }
+                    " />
                     <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success" @click="addStory" />
                 </div>
             </div>
         </Dialog>
 
         <!-- dialog chỉnh sửa truyện -->
-        <Dialog v-model:visible="dialogEditStory" modal header="Chỉnh sửa Truyện" :style="{ width: '45%' }" @hide="resetFormStory">
+        <Dialog v-model:visible="dialogEditStory" modal header="Chỉnh sửa Truyện" :style="{ width: '45%' }"
+            @hide="resetFormStory">
             <div class="p-fluid">
                 <div class="field" :class="{ 'p-invalid': errors.storyNameForm }">
                     <label for="storyNameForm" class="text-lg">Tên Truyện</label>
@@ -586,14 +593,16 @@ const filterschapterter = ref({
                 </div>
                 <div class="field">
                     <label for="descriptionForm" class="text-lg">Mô Tả</label>
-                    <Textarea id="descriptionForm" v-model="descriptionForm" rows="3" class="w-full" :class="{ 'p-invalid': errors.descriptionForm }" />
+                    <Textarea id="descriptionForm" v-model="descriptionForm" rows="3" class="w-full"
+                        :class="{ 'p-invalid': errors.descriptionForm }" />
                 </div>
-                
+
                 <div class="field">
                     <label for="typeDetail" class="text-lg">Chi Tiết Thể Loại</label>
                     <div class="flex flex-wrap">
                         <div v-for="item in typeDetail" :key="item" class="flex align-items-center mb-2 mr-4">
-                            <Checkbox :class="{ 'p-invalid': errors.typeDetailStoryForm }" v-model="typeDetailStoryForm" :value="item" />
+                            <Checkbox :class="{ 'p-invalid': errors.typeDetailStoryForm }" v-model="typeDetailStoryForm"
+                                :value="item" />
                             <label class="ml-2">{{ item }}</label>
                         </div>
                     </div>
@@ -602,18 +611,12 @@ const filterschapterter = ref({
                     </div>
                 </div>
                 <div class="flex justify-content-end gap-2">
-                    <Button
-                        type="button"
-                        label="Hủy"
-                        icon="pi pi-times"
-                        class="p-button-secondary"
-                        @click="
-                            () => {
-                                resetFormStory();
-                                dialogEditStory = false;
-                            }
-                        "
-                    />
+                    <Button type="button" label="Hủy" icon="pi pi-times" class="p-button-secondary" @click="
+                        () => {
+                            resetFormStory();
+                            dialogEditStory = false;
+                        }
+                    " />
                     <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success" @click="editStory" />
                 </div>
             </div>
@@ -623,10 +626,8 @@ const filterschapterter = ref({
         <Dialog v-model:visible="dialogDeleteStory" :style="{ width: '450px' }" header="Xóa truyện" :modal="true">
             <div class="confirmation-content">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                <span v-if="cloudDeleteStory"
-                    >Bạn chắc chắn muốn xóa truyện <b>{{ cloudDeleteStory.storyName }}</b
-                    >?</span
-                >
+                <span v-if="cloudDeleteStory">Bạn chắc chắn muốn xóa truyện <b>{{ cloudDeleteStory.storyName
+                        }}</b>?</span>
             </div>
             <template #footer>
                 <Button label="No" icon="pi pi-times" text @click="dialogDeleteStory = false" />
@@ -635,77 +636,76 @@ const filterschapterter = ref({
         </Dialog>
 
         <!-- dialog thêm chương mới -->
-        <Dialog v-model:visible="dialogaddChapter" modal header="Thêm chương" :style="{ width: '45%' }" @hide="resetFormChapter">
+        <Dialog v-model:visible="dialogaddChapter" modal header="Thêm chương" :style="{ width: '45%' }"
+            @hide="resetFormChapter">
             <div class="p-fluid">
                 <div class="field">
                     <label for="detailIDForm" class="text-lg">Mã chương</label>
-                    <InputText id="detailIDForm" v-model="detailIDForm" class="w-full" :class="{ 'p-invalid': errors.detailIDForm }" />
+                    <InputText id="detailIDForm" v-model="detailIDForm" class="w-full"
+                        :class="{ 'p-invalid': errors.detailIDForm }" />
                 </div>
                 <div class="field">
                     <label for="sttNameForm" class="text-lg">Chương</label>
-                    <InputText id="sttNameForm" v-model="sttNameForm" class="w-full" :class="{ 'p-invalid': errors.sttNameForm }" />
+                    <InputText id="sttNameForm" v-model="sttNameForm" class="w-full"
+                        :class="{ 'p-invalid': errors.sttNameForm }" />
                 </div>
                 <div class="field">
                     <label for="contentForm" class="text-lg">Nội dung</label>
-                    <Textarea id="contentForm" v-model="contentForm" rows="3" class="w-full" :class="{ 'p-invalid': errors.contentForm }" />
+                    <Textarea id="contentForm" v-model="contentForm" rows="3" class="w-full"
+                        :class="{ 'p-invalid': errors.contentForm }" />
                 </div>
-                <FileUpload id="fileForm" name="tải file" url="/api/upload" @upload="onAdvancedUpload($event)" accept="application/pdf" :maxFileSize="10000000">
+                <FileUpload id="fileForm" name="tải file" url="/api/upload" @upload="onAdvancedUpload($event)"
+                    accept="application/pdf" :maxFileSize="10000000">
                     <template #empty>
                         <p>Kéo và thả tập tin vào đây để tải lên.</p>
                     </template>
                 </FileUpload>
                 <div class="flex justify-content-end gap-2">
-                    <Button
-                        type="button"
-                        label="Hủy"
-                        icon="pi pi-times"
-                        class="p-button-secondary"
-                        @click="
-                            () => {
-                                resetFormChapter();
-                                dialogaddChapter = false;
-                            }
-                        "
-                    />
+                    <Button type="button" label="Hủy" icon="pi pi-times" class="p-button-secondary" @click="
+                        () => {
+                            resetFormChapter();
+                            dialogaddChapter = false;
+                        }
+                    " />
                     <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success" @click="addChapter" />
                 </div>
             </div>
         </Dialog>
 
         <!-- dialog chỉnh sửa chương -->
-        <Dialog v-model:visible="dialogEditChapter" modal header="Chỉnh sửa Truyện" :style="{ width: '45%' }" @hide="resetFormChapter">
+        <Dialog v-model:visible="dialogEditChapter" modal header="Chỉnh sửa Truyện" :style="{ width: '45%' }"
+            @hide="resetFormChapter">
             <div class="p-fluid">
                 <div class="field">
                     <label for="detailIDForm" class="text-lg">Mã chương</label>
-                    <InputText id="detailIDForm" v-model="detailIDForm" class="w-full" :class="{ 'p-invalid': errors.detailIDForm }" />
+                    <InputText id="detailIDForm" v-model="detailIDForm" class="w-full"
+                        :class="{ 'p-invalid': errors.detailIDForm }" />
                 </div>
                 <div class="field">
                     <label for="sttNameForm" class="text-lg">Chương</label>
-                    <InputText id="sttNameForm" v-model="sttNameForm" class="w-full" :class="{ 'p-invalid': errors.sttNameForm }" />
+                    <InputText id="sttNameForm" v-model="sttNameForm" class="w-full"
+                        :class="{ 'p-invalid': errors.sttNameForm }" />
                 </div>
                 <div class="field">
                     <label for="contentForm" class="text-lg">Nội dung</label>
-                    <Textarea id="contentForm" v-model="contentForm" rows="3" class="w-full" :class="{ 'p-invalid': errors.contentForm }" />
+                    <Textarea id="contentForm" v-model="contentForm" rows="3" class="w-full"
+                        :class="{ 'p-invalid': errors.contentForm }" />
                 </div>
-                <FileUpload id="fileForm" name="tải file" url="/api/upload" @upload="onAdvancedUpload($event)" accept="application/pdf" :maxFileSize="10000000">
+                <FileUpload id="fileForm" name="tải file" url="/api/upload" @upload="onAdvancedUpload($event)"
+                    accept="application/pdf" :maxFileSize="10000000">
                     <template #empty>
                         <p>Kéo và thả tập tin vào đây để tải lên.</p>
                     </template>
                 </FileUpload>
                 <div class="flex justify-content-end gap-2">
-                    <Button
-                        type="button"
-                        label="Hủy"
-                        icon="pi pi-times"
-                        class="p-button-secondary"
-                        @click="
-                            () => {
-                                resetFormChapter();
-                                dialogEditChapter = false;
-                            }
-                        "
-                    />
-                    <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success" @click="editChapter" />
+                    <Button type="button" label="Hủy" icon="pi pi-times" class="p-button-secondary" @click="
+                        () => {
+                            resetFormChapter();
+                            dialogEditChapter = false;
+                        }
+                    " />
+                    <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success"
+                        @click="editChapter" />
                 </div>
             </div>
         </Dialog>
@@ -714,7 +714,8 @@ const filterschapterter = ref({
         <Dialog v-model:visible="dialogdeleteChapter" :style="{ width: '450px' }" header="Xóa chương" :modal="true">
             <div class="confirmation-content">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                <span v-if="clouddeleteChapter">Bạn chắc chắn muốn xóa chương <b>{{ clouddeleteChapter.sttName }}</b>?</span>
+                <span v-if="clouddeleteChapter">Bạn chắc chắn muốn xóa chương <b>{{ clouddeleteChapter.sttName
+                        }}</b>?</span>
             </div>
             <template #footer>
                 <Button label="No" icon="pi pi-times" text @click="dialogdeleteChapter = false" />

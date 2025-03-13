@@ -46,7 +46,7 @@ const disNext = ref(false);
 const op = ref();
 const getAllDetail = async (id) => {
     try {
-        const res = await axios.get(`http://10.15.82.73:5041/api/DetailStory/get-detailstory/${id}`);
+        const res = await axios.get(`http://localhost:5041/api/DetailStory/get-detailstory/${id}`);
         dataAll.value = res.data; // Không cần await với res.data
         // Kiểm tra nếu urlImg tồn tại và xử lý nó
         // console.log(dataAll.value);
@@ -58,7 +58,7 @@ const getAllDetail = async (id) => {
         dataContent.value = dataAll.value.data?.content || ''; // Sử dụng content nếu có
 
         if (dataAll.value.data) {
-            const response = await axios.get(`http://10.15.82.73:5041/api/DetailStory/get-chapter/${dataAll.value.data?.storyID}`);
+            const response = await axios.get(`http://localhost:5041/api/DetailStory/get-chapter/${dataAll.value.data?.storyID}`);
             dataChapter.value = response.data; // Không cần await với res.data
             chapters.value = dataAll.value.data?.detailID;
             let indx = findIndex(dataChapter.value.data, pa.params.id);

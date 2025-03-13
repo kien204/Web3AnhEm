@@ -1,7 +1,7 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
+import { useToast } from 'primevue/usetoast';
+import { onMounted, ref } from 'vue';
 
 const props = defineProps({
     visible: Boolean
@@ -15,7 +15,7 @@ const show = (check, statu, content) => {
 const theloai = ref([]);
 const getAll = async () => {
     try {
-        const response = await axios.get('http://10.15.169.9:5041/api/Story/get-type');
+        const response = await axios.get('http://localhost:5041/api/Story/get-type');
         theloai.value = await response.data.data;
         console.log(theloai.value);
     } catch (e) {
@@ -91,7 +91,8 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Dialog :visible="visible" modal header="Thêm Thể Loại" :style="{ width: '45%' }" @hide="() => emit('update:visible', false)">
+    <Dialog :visible="visible" modal header="Thêm Thể Loại" :style="{ width: '45%' }"
+        @hide="() => emit('update:visible', false)">
         <div class="p-fluid">
             <div class="field" :class="{ 'p-invalid': errors.storyName }">
                 <label for="storyName" class="text-lg">Tên Truyện</label>
@@ -111,14 +112,17 @@ onMounted(async () => {
             </div>
             <div class="field">
                 <label for="description" class="text-lg">Mô Tả</label>
-                <Textarea id="description" v-model="newTruyen.description" rows="3" class="w-full" :class="{ 'p-invalid': errors.description }" />
+                <Textarea id="description" v-model="newTruyen.description" rows="3" class="w-full"
+                    :class="{ 'p-invalid': errors.description }" />
             </div>
             <div class="field">
                 <label for="typeStory" class="text-lg">Thể Loại</label>
                 <div class="flex align-items-center mb-2">
-                    <RadioButton :class="{ 'p-invalid': errors.typeStory }" inputId="typeStoryTT" name="typeStory" value="TT" v-model="newTruyen.typeStory" />
+                    <RadioButton :class="{ 'p-invalid': errors.typeStory }" inputId="typeStoryTT" name="typeStory"
+                        value="TT" v-model="newTruyen.typeStory" />
                     <label for="typeStoryTT" class="ml-2 mr-6">TT</label>
-                    <RadioButton :class="{ 'p-invalid': errors.typeStory }" inputId="typeStoryTC" name="typeStory" value="TC" v-model="newTruyen.typeStory" />
+                    <RadioButton :class="{ 'p-invalid': errors.typeStory }" inputId="typeStoryTC" name="typeStory"
+                        value="TC" v-model="newTruyen.typeStory" />
                     <label for="typeStoryTC" class="ml-2">TC</label>
                 </div>
             </div>
@@ -126,13 +130,15 @@ onMounted(async () => {
                 <label for="typeDetailStory" class="text-lg">Chi Tiết Thể Loại</label>
                 <div class="flex flex-wrap">
                     <div v-for="item in theloai" :key="item" class="flex align-items-center mb-2 mr-4">
-                        <Checkbox :class="{ 'p-invalid': errors.typeDetailStory }" v-model="newTruyen.typeDetailStory" :value="item" />
+                        <Checkbox :class="{ 'p-invalid': errors.typeDetailStory }" v-model="newTruyen.typeDetailStory"
+                            :value="item" />
                         <label class="ml-2">{{ item }}</label>
                     </div>
                 </div>
             </div>
             <div class="flex justify-content-end gap-2">
-                <Button type="button" label="Hủy" icon="pi pi-times" class="p-button-secondary"@click="() => { resetForm(); visible = false;}"/>
+                <Button type="button" label="Hủy" icon="pi pi-times" class="p-button-secondary"
+                    @click="() => { resetForm(); visible = false; }" />
                 <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success" @click="addTruyen" />
             </div>
         </div>
