@@ -8,36 +8,35 @@ const model = ref([
         icon: 'pi pi-fw pi-briefcase',
         items: [
             {
-                label: 'Chỉnh sửa truyện',
-                icon: 'pi pi-cog',
+                label: 'Quản lý truyện',
+                icon: 'pi pi-book',
                 to: '/view/quanlytruyen'
+            },
+            {
+                label: 'Quản lý Bình luận & Đánh giá',
+                icon: 'pi pi-comment',
+                to: '/view/quanlybinhluandanhgia'
             }
         ]
     },
     {
-        label: 'Quản lý chương',
-        icon: 'pi pi-fw pi-briefcase',
+        label: 'Quản lý trang',
+        icon: 'pi pi-fw pi-globe',
         items: [
             {
-                label: 'Chỉnh sửa chương',
-                icon: 'pi pi-cog',
+                label: 'Quản lý Logo & Tên trang',
+                icon: 'pi pi-globe',
+                to: '/view/quanlychap'
+            },
+            {
+                label: 'Quản lý Quảng cáo',
+                icon: 'pi pi-megaphone',
                 to: '/view/quanlychap'
             }
         ]
     },
     {
-        label: 'Quản lý thể loại',
-        icon: 'pi pi-fw pi-briefcase',
-        items: [
-            {
-                label: 'Chỉnh sửa thể loại',
-                icon: 'pi pi-cog',
-                to: '/view/quanlytheloai'
-            }
-        ]
-    },
-    {
-        label: 'Thống kê',
+        label: 'Quản lý thống kê',
         icon: 'pi pi-chart-bar',
         items: [
             {

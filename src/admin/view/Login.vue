@@ -12,7 +12,6 @@ const email = ref('');
 const password = ref('');
 const checked = ref(false);
 const token = ref('');
-// http://10.15.89.56:5041/api/Login/login
 
 const show = (check, statu, content) => {
     toast.add({ severity: check, summary: statu, detail: content, life: 3000 });
@@ -70,16 +69,16 @@ const login = async () => {
 
                     <div>
                         <label for="email1"
-                            class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                        <InputText id="email1" type="text" placeholder="Email address" class="w-full md:w-[30rem] mb-8"
+                            class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Tên đăng nhập:</label>
+                        <InputText id="email1" type="text" placeholder="Tài khoản" class="w-full md:w-[30rem] mb-8"
                             v-model="email" />
 
                         <label for="password1"
-                            class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                        <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true"
+                            class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Mật khẩu:</label>
+                        <Password id="password1" v-model="password" placeholder="Mật khẩu" :toggleMask="true"
                             class="mb-4" fluid :feedback="false"></Password>
 
-                        <Button label="Sign In" class="w-full mt-4" @click="login"></Button>
+                        <Button label="Đăng nhập" class="w-full mt-4" @click="login"></Button>
                     </div>
                 </div>
             </div>

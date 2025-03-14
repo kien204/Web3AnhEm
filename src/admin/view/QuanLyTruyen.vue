@@ -25,7 +25,7 @@ const storyList = ref([
         storyAuthor: 'Conan',
         coverImage: 'https://i.imgur.com/7bMqy9z.jpg',
         description: 'Truyện thám tử nổi tiếng',
-        typeStory: 'TT',
+        typeStory: 'TC',
         typeDetailStory: 'Hành động, Hài hước'
     }
 ]);
@@ -288,6 +288,15 @@ const deleteChapter = async () => {
     }
 };
 
+const openFile = (file) =>{
+    try {
+        window.open(file, "_blank");
+    } catch (error) {
+        console.log("Loi khi mo file: ", error);
+        showError('Lỗi khi mở file!') 
+    }
+};
+
 // Utilities
 const showSuccess = (detail) => toast.add({ severity: 'success', summary: 'Thành công', detail, life: 3000 });
 const showError = (detail) => toast.add({ severity: 'error', summary: 'Lỗi', detail, life: 3000 });
@@ -307,7 +316,7 @@ const codeChapterData = (id) => {
             <Toolbar class="mb-4">
                 <template #start>
                     <Button label="Thêm truyện mới" icon="pi pi-plus" severity="success" class="mr-2" @click="dialogAddStory = true" />
-                    <Button icon="pi pi-refresh" rounded raised @click="getAllStory" />
+                    <Button icon="pi pi-refresh" v-tooltip.top="'Làm mới'" rounded raised @click="getAllStory" />
                 </template>
             </Toolbar>
 
@@ -344,8 +353,8 @@ const codeChapterData = (id) => {
                 <Column field="typeDetailStory" header="Chi Tiết Thể Loại" />
                 <Column :exportable="false" style="min-width: 8rem">
                     <template #body="slotProps">
-                        <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editStoryData(slotProps.data)" />
-                        <Button icon="pi pi-trash" outlined rounded severity="danger" @click="deleteStoryData(slotProps.data)" />
+                        <Button icon="pi pi-pencil" v-tooltip.top="'Sửa truyện'" outlined rounded class="mr-2" @click="editStoryData(slotProps.data)" />
+                        <Button icon="pi pi-trash" v-tooltip.top="'Xóa truyện'" outlined rounded severity="danger" @click="deleteStoryData(slotProps.data)" />
                     </template>
                 </Column>
 
@@ -368,8 +377,9 @@ const codeChapterData = (id) => {
 
                             <Column :exportable="false" style="min-width: 8rem">
                                 <template #body="slotProps">
-                                    <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editChapterData(slotProps.data)" />
-                                    <Button icon="pi pi-trash" outlined rounded severity="danger" @click="deleteChapterData(slotProps.data)" />
+                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="openFile(slotProps.data.urlImg)"/>
+                                    <Button icon="pi pi-pencil" v-tooltip.top="'Sửa chương'" outlined rounded class="mr-2" @click="editChapterData(slotProps.data)" />
+                                    <Button icon="pi pi-trash" v-tooltip.top="'Xóa chương'" outlined rounded severity="danger" @click="deleteChapterData(slotProps.data)" />
                                 </template>
                             </Column>
                         </DataTable>
@@ -419,6 +429,7 @@ const codeChapterData = (id) => {
                         </div>
                     </div>
                     <div class="field">
+                        <label for="AddTypeDetailStoryForm" class="text-lg">Thêm Chi Tiết Thể Loại Mới</label>
                         <InputText id="AddTypeDetailStoryForm" class="w-full mb-5" />
                     </div>
                 </div>
@@ -469,6 +480,7 @@ const codeChapterData = (id) => {
                         </div>
                     </div>
                     <div class="field">
+                        <label for="AddTypeDetailStoryForm" class="text-lg">Thêm Chi Tiết Thể Loại Mới</label>
                         <InputText id="AddTypeDetailStoryForm" class="w-full mb-5" />
                     </div>
                 </div>
