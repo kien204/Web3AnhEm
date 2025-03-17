@@ -14,26 +14,19 @@
             </div>
         </div>
 
-        <!-- Khu vực bình luận bên ngoài khung truyện -->
+        <!-- Khu vực bình luận -->
         <div class="w-full max-w-6xl p-6 border rounded-lg shadow-2xl bg-gray-100 mt-6">
             <h3 class="text-3xl font-bold text-gray-900 mb-6">💬 Bình luận</h3>
-            <div v-for="(comment, index) in comments" :key="comment.id"
-                class="comment-item p-4 bg-white rounded-lg shadow-md mb-4 border">
+            <div v-for="(comment, index) in comments" :key="comment.id" class="comment-item p-4 bg-white rounded-lg shadow-md mb-4 border">
                 <div class="flex items-start gap-4">
-                    <img src="https://ui-avatars.com/api/?name=User" alt="Avatar"
-                        class="w-12 h-12 rounded-full shadow-md" />
+                    <img src="https://ui-avatars.com/api/?name=User" alt="Avatar" class="w-12 h-12 rounded-full shadow-md" />
                     <div class="flex-1">
-                        <p v-if="editingIndex !== index" class="text-gray-800 font-medium text-lg">{{ comment.text }}
-                        </p>
-                        <input v-else v-model="editText"
-                            class="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        <p v-if="editingIndex !== index" class="text-gray-800 font-medium text-lg">{{ comment.text }}</p>
+                        <input v-else v-model="editText" class="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         <div class="flex gap-4 mt-3">
-                            <button v-if="editingIndex === index" @click="updateComment(comment.id)"
-                                class="text-green-500 hover:text-green-700">💾 Lưu</button>
-                            <button v-if="editingIndex !== index" @click="editComment(index, comment.text)"
-                                class="text-blue-500 hover:text-blue-700">✏️ Sửa</button>
-                            <button @click="deleteComment(comment.id)" class="text-red-500 hover:text-red-700">🗑️
-                                Xóa</button>
+                            <button v-if="editingIndex === index" @click="updateComment(comment.id)" class="text-green-500 hover:text-green-700">💾 Lưu</button>
+                            <button v-if="editingIndex !== index" @click="editComment(index, comment.text)" class="text-blue-500 hover:text-blue-700">✏️ Sửa</button>
+                            <button @click="deleteComment(comment.id)" class="text-red-500 hover:text-red-700">🗑️ Xóa</button>
                         </div>
                     </div>
                 </div>
@@ -41,10 +34,8 @@
 
             <!-- Nhập bình luận -->
             <div class="mt-6 flex items-center gap-6">
-                <input v-model="newComment" placeholder="Nhập bình luận của bạn..."
-                    class="flex-1 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm text-lg" />
-                <button @click="saveComment"
-                    class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-all text-lg">Gửi</button>
+                <input v-model="newComment" placeholder="Nhập bình luận của bạn..." class="flex-1 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm text-lg" />
+                <button @click="saveComment" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-all text-lg">Gửi</button>
             </div>
         </div>
     </div>
@@ -58,8 +49,7 @@
                     <Button icon="pi pi-arrow-left" text raised severity="danger" @click="previousChapter" />
                 </div>
                 <div>
-                    <Dropdown v-model="chapters" optionValue="detailId" :options="dataChapter.data"
-                        optionLabel="chapter" class="w-full md:w-14rem" @change="pushView(chapters)" />
+                    <Dropdown v-model="chapters" optionValue="detailId" :options="dataChapter.data" optionLabel="chapter" class="w-full md:w-14rem" @change="pushView(chapters)" />
                 </div>
                 <div>
                     <Button icon="pi pi-arrow-right" text raised severity="danger" @click="nextChapter" />
@@ -71,7 +61,7 @@
 
 <script setup>
 import axios from 'axios';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRouter();
@@ -83,98 +73,55 @@ const editText = ref('');
 const urlString = ref([]);
 const dataContent = ref('');
 const dataAll = ref({});
+const dataChapter = ref({});
+const chapters = ref(null);
 
 const getAllDetail = async (id) => {
+    if (!id) return;
     try {
-<<<<<<< HEAD
-        const res = await axios.get(`http://10.15.82.73:5041/api/DetailStory/get-detailstory/${id}`);
+        const res = await axios.get(`http://10.15.99.193:5041/api/DetailStory/get-detailstory/${id}`);
         dataAll.value = res.data;
-        if (dataAll.value.data?.urlImg) {
-            urlString.value = dataAll.value.data.urlImg.trim().split(',');
-        }
+        urlString.value = dataAll.value.data?.urlImg?.trim().split(',') || [];
         dataContent.value = dataAll.value.data?.content || '';
         fetchComments(id);
-=======
-        const res = await axios.get(`http://localhost:5041/api/DetailStory/get-detailstory/${id}`);
-        dataAll.value = res.data; // Không cần await với res.data
-        // Kiểm tra nếu urlImg tồn tại và xử lý nó
-        // console.log(dataAll.value);
-        if (dataAll.value.data?.urlImg) {
-            urlString.value = dataAll.value.data.urlImg.trim().split(',');
-        }
-
-        // Cập nhật nội dung nếu có
-        dataContent.value = dataAll.value.data?.content || ''; // Sử dụng content nếu có
-
-        if (dataAll.value.data) {
-            const response = await axios.get(`http://localhost:5041/api/DetailStory/get-chapter/${dataAll.value.data?.storyID}`);
-            dataChapter.value = response.data; // Không cần await với res.data
-            chapters.value = dataAll.value.data?.detailID;
-            let indx = findIndex(dataChapter.value.data, pa.params.id);
-            statu(dataChapter.value.data, indx);
-        }
->>>>>>> 2faa62bdd443e02fadaa8ddd6dd92e4410fcdc5a
     } catch (e) {
         console.error('Lỗi khi lấy dữ liệu:', e);
     }
 };
 
 const fetchComments = async (id) => {
+    if (!id) return;
     try {
-        const res = await axios.get(`http://10.15.82.73:5041/api/comments/${id}`);
+        const res = await axios.get(`http://10.15.99.193:5041/api/comments/${id}`);
         comments.value = res.data;
     } catch (e) {
         console.error('Lỗi khi lấy bình luận:', e);
     }
 };
 
-const saveComment = async () => {
-    if (!newComment.value.trim()) return;
-    try {
-        await axios.post('http://10.15.82.73:5041/api/comments', {
-            storyId: pa.params.id,
-            text: newComment.value
-        });
-        newComment.value = '';
-        fetchComments(pa.params.id);
-    } catch (e) {
-        console.error('Lỗi khi lưu bình luận:', e);
+const previousChapter = () => {
+    const index = dataChapter.value.data.findIndex((chap) => chap.detailId === pa.params.id);
+    if (index > 0) {
+        route.push(`/story/${dataChapter.value.data[index - 1].detailId}`);
     }
 };
 
-const deleteComment = async (id) => {
-    try {
-        await axios.delete(`http://10.15.82.73:5041/api/comments/${id}`);
-        fetchComments(pa.params.id);
-    } catch (e) {
-        console.error('Lỗi khi xóa bình luận:', e);
+const nextChapter = () => {
+    const index = dataChapter.value.data.findIndex((chap) => chap.detailId === pa.params.id);
+    if (index < dataChapter.value.data.length - 1) {
+        route.push(`/story/${dataChapter.value.data[index + 1].detailId}`);
     }
 };
 
-const editComment = (index, text) => {
-    editingIndex.value = index;
-    editText.value = text;
-};
-
-const updateComment = async (id) => {
-    try {
-        await axios.put(`http://10.15.82.73:5041/api/comments/${id}`, {
-            text: editText.value
-        });
-        editingIndex.value = null;
-        fetchComments(pa.params.id);
-    } catch (e) {
-        console.error('Lỗi khi cập nhật bình luận:', e);
+const pushView = (chapterId) => {
+    if (chapterId) {
+        route.push(`/story/${chapterId}`);
     }
 };
 
 onMounted(() => {
     getAllDetail(pa.params.id);
 });
-
-watch(() => pa.params.id, (newId) => {
-    if (newId) getAllDetail(newId);
-}, { immediate: true });
 </script>
 
 <style>
