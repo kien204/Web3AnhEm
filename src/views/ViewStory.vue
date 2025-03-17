@@ -86,6 +86,7 @@ const dataAll = ref({});
 
 const getAllDetail = async (id) => {
     try {
+<<<<<<< HEAD
         const res = await axios.get(`http://10.15.82.73:5041/api/DetailStory/get-detailstory/${id}`);
         dataAll.value = res.data;
         if (dataAll.value.data?.urlImg) {
@@ -93,6 +94,26 @@ const getAllDetail = async (id) => {
         }
         dataContent.value = dataAll.value.data?.content || '';
         fetchComments(id);
+=======
+        const res = await axios.get(`http://localhost:5041/api/DetailStory/get-detailstory/${id}`);
+        dataAll.value = res.data; // Không cần await với res.data
+        // Kiểm tra nếu urlImg tồn tại và xử lý nó
+        // console.log(dataAll.value);
+        if (dataAll.value.data?.urlImg) {
+            urlString.value = dataAll.value.data.urlImg.trim().split(',');
+        }
+
+        // Cập nhật nội dung nếu có
+        dataContent.value = dataAll.value.data?.content || ''; // Sử dụng content nếu có
+
+        if (dataAll.value.data) {
+            const response = await axios.get(`http://localhost:5041/api/DetailStory/get-chapter/${dataAll.value.data?.storyID}`);
+            dataChapter.value = response.data; // Không cần await với res.data
+            chapters.value = dataAll.value.data?.detailID;
+            let indx = findIndex(dataChapter.value.data, pa.params.id);
+            statu(dataChapter.value.data, indx);
+        }
+>>>>>>> 2faa62bdd443e02fadaa8ddd6dd92e4410fcdc5a
     } catch (e) {
         console.error('Lỗi khi lấy dữ liệu:', e);
     }

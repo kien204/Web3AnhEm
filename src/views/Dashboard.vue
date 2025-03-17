@@ -20,7 +20,7 @@ const options2 = ref([
 ]);
 const getAll = async () => {
     try {
-        const response = await axios.get('http://10.15.82.73:5041/api/Story/getAll');
+        const response = await axios.get('http://localhost:5041/api/Story/getAll');
         data.value = await response.data;
     } catch (e) {
         console.log(e);
@@ -29,7 +29,7 @@ const getAll = async () => {
 
 const getTopTT = async () => {
     try {
-        const response = await axios.get('http://10.15.82.73:5041/api/Story/get-top-view/10/TT');
+        const response = await axios.get('http://localhost:5041/api/Story/get-top-view/10/TT');
         dataTopTT.value = await response.data;
         console.log(dataTopTT.value);
     } catch (e) {
@@ -39,7 +39,7 @@ const getTopTT = async () => {
 
 const getTopTC = async () => {
     try {
-        const response = await axios.get('http://10.15.82.73:5041/api/Story/get-top-view/10/TC');
+        const response = await axios.get('http://localhost:5041/api/Story/get-top-view/10/TC');
         dataTopTC.value = await response.data;
     } catch (e) {
         console.log(e);
@@ -48,7 +48,7 @@ const getTopTC = async () => {
 
 const pushView = async (id) => {
     try {
-        const response = await axios.get(`http://10.15.82.73:5041/api/DetailStory/get-chapter/${id}`);
+        const response = await axios.get(`http://localhost:5041/api/DetailStory/get-chapter/${id}`);
         let data = await response.data;
         route.push(`view-story/${data.data[0].detailId}`);
     } catch (e) {
@@ -77,7 +77,7 @@ const findStory = async (sk) => {
     } else {
         try {
             let uri = encodeURIComponent(sk);
-            const response = await axios.get(`http://10.15.82.73:5041/api/Story/find-story/${uri}`);
+            const response = await axios.get(`http://localhost:5041/api/Story/find-story/${uri}`);
             dataFillter.value = await response.data;
         } catch (e) {
             console.log(e);

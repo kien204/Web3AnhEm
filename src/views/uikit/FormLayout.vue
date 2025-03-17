@@ -50,7 +50,7 @@ const filteredStories = ref([]);
 
 const fetchGenres = async () => {
     try {
-        const response = await fetch('http://10.15.82.73:5041/api/Story/get-type');
+        const response = await fetch('http://localhost:5041/api/Story/get-type');
         const data = await response.json();
         // allGenres.value = data.data;
         for (let i = 0; i < data.data.length; i += 7) {
@@ -70,7 +70,7 @@ const confirmSelection = async () => {
         } else {
             return;
         }
-        const response = await axios.get(`http://10.15.82.73:5041/api/Story/filter-story/${uri}`);
+        const response = await axios.get(`http://localhost:5041/api/Story/filter-story/${uri}`);
         filteredStories.value = await response.data;
     } catch (error) {
         console.error('Lỗi khi lấy danh sách thể loại:', error);
