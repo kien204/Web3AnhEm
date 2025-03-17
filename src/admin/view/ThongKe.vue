@@ -1,48 +1,47 @@
-<template>
-    <div class="card flex justify-content-center">
-        <Chart type="pie" :data="chartData" :options="chartOptions" class="w-full md:w-30rem" />
-    </div>
-</template>
-
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 
-onMounted(() => {
-    chartData.value = setChartData();
-    chartOptions.value = setChartOptions();
+const listType = ref(["siêu nhân", "Cổ tích", "biến hình"])
+
+const readData = ref({
+  labels: ["01/03", "02/03", "03/03", "04/03", "05/03"],
+  datasets: [
+    {
+      label: "Lượt đọc",
+      data: [320, 450, 370, 500, 620],
+      fill: false,
+      borderColor: "#42A5F5",
+      tension: 0.4,
+    },
+  ],
 });
 
-const chartData = ref();
-const chartOptions = ref();
+const popularStories = ref({
+  labels: listType,
+  datasets: [
+    {
+      label: "Lượt đọc",
+      data: [5200, 4300, 3900, 3100, 2700],
+      backgroundColor: "#FFA726",
+    },
+  ],
+});
 
-const setChartData = () => {
-    const documentStyle = getComputedStyle(document.body);
-
-    return {
-        labels: ['A', 'B', 'C'],
-        datasets: [
-            {
-                data: [540, 325, 702],
-                backgroundColor: [documentStyle.getPropertyValue('--cyan-500'), documentStyle.getPropertyValue('--orange-500'), documentStyle.getPropertyValue('--gray-500')],
-                hoverBackgroundColor: [documentStyle.getPropertyValue('--cyan-400'), documentStyle.getPropertyValue('--orange-400'), documentStyle.getPropertyValue('--gray-400')]
-            }
-        ]
-    };
-};
-
-const setChartOptions = () => {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
-
-    return {
-        plugins: {
-            legend: {
-                labels: {
-                    usePointStyle: true,
-                    color: textColor
-                }
-            }
-        }
-    };
-};
+const chartOptions = ref({
+  responsive: true,
+  maintainAspectRatio: false,
+});
 </script>
+
+<template>
+  <div class="p-5">
+    <h2 class="text-lg font-bold">Tổng số truyện theo từng thể loại</h2>
+    <Chart type="bar" :data="popularStories" :options="chartOptions" class="w-full h-64" />
+
+    <h2 class="text-lg font-bold mt-5">Số lượt đọc theo ngày</h2>
+    <Chart type="line" :data="readData" :options="chartOptions" class="w-full h-64" />
+
+    <h2 class="text-lg font-bold mt-5">Truyện phổ biến nhất</h2>
+    <Chart type="bar" :data="popularStories" :options="chartOptions" class="w-full h-64" />
+  </div>
+</template>

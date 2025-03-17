@@ -1,35 +1,17 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
+import { useToast } from 'primevue/usetoast';
+import { onMounted, ref } from 'vue';
 
 const toast = useToast();
 const token = JSON.parse(localStorage.getItem('token'));
-const url = 'http://10.15.82.73:5041/api';
+const url = 'http://10.15.99.193:5041/api';
 
 // Reactive variables
 const expandedRows = ref([]);
-const chapterterData = ref([
-    {
-        id: 1,
-        storyID: 1,
-        sttName: 'Chương 1',
-        file: 'https://i.imgur.com/7bMqy9z.jpg'
-    }
-]);
-const storyList = ref([
-    {
-        id: 1,
-        storyCode: 'TT001',
-        storyName: 'Truyện Thám Tử',
-        storyAuthor: 'Conan',
-        coverImage: 'https://i.imgur.com/7bMqy9z.jpg',
-        description: 'Truyện thám tử nổi tiếng',
-        typeStory: 'TC',
-        typeDetailStory: 'Hành động, Hài hước'
-    }
-]);
-const typeDetail = ref(['sieu nhan', 'Hành động', 'Hài hước']);
+const chapterterData = ref([]);
+const storyList = ref([]);
+const typeDetail = ref([]);
 
 // Form fields
 const storyNameForm = ref('');
@@ -288,12 +270,14 @@ const deleteChapter = async () => {
     }
 };
 
-const openFile = (file) =>{
+const openFile = (file) => {
+    console.log(file);
+    
     try {
-        window.open(file, "_blank");
+        window.open(file, '_blank');
     } catch (error) {
-        console.log("Loi khi mo file: ", error);
-        showError('Lỗi khi mở file!') 
+        console.log('Loi khi mo file: ', error);
+        showError('Lỗi khi mở file!');
     }
 };
 
@@ -346,7 +330,7 @@ const codeChapterData = (id) => {
                 <Column field="storyAuthor" header="Tác Giả" />
                 <Column header="Ảnh Bìa">
                     <template #body="slotProps">
-                        <img :src="slotProps.data.coverImage" :alt="slotProps.data.storyName" class="border-round" style="width: 64px" />
+                        <Image :src="slotProps.data.coverImage" :alt="slotProps.data.storyName" class="border-round" width="120" preview />
                     </template>
                 </Column>
                 <Column field="typeStory" header="Thể Loại" />
@@ -372,12 +356,12 @@ const codeChapterData = (id) => {
                                     <Button label="Thêm chương mới" icon="pi pi-plus" severity="success" class="ml-2" @click="codeChapterData(slotProps.data.id)" />
                                 </IconField>
                             </template>
-                            <Column field="id" header="Mã Chương" />
+                            <Column field="detailID" header="Mã Chương" />
                             <Column field="sttName" header="Tên Chương" />
 
                             <Column :exportable="false" style="min-width: 8rem">
                                 <template #body="slotProps">
-                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="openFile(slotProps.data.urlImg)"/>
+                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="openFile(slotProps.data.urlImg)" />
                                     <Button icon="pi pi-pencil" v-tooltip.top="'Sửa chương'" outlined rounded class="mr-2" @click="editChapterData(slotProps.data)" />
                                     <Button icon="pi pi-trash" v-tooltip.top="'Xóa chương'" outlined rounded severity="danger" @click="deleteChapterData(slotProps.data)" />
                                 </template>
@@ -590,7 +574,7 @@ const codeChapterData = (id) => {
                             }
                         "
                     />
-                    <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success" @click="addChapter" />
+                    <Button type="button" label="Lưu" icon="pi pi-check" class="p-button-success" @click="editChapter" />
                 </div>
             </div>
         </Dialog>
