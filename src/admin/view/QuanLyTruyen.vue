@@ -2,10 +2,12 @@
 import axios from 'axios';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const toast = useToast();
 const token = JSON.parse(localStorage.getItem('token'));
-const url = 'http://10.15.99.193:5041/api';
+const url = 'http://10.15.7.14:5041/api';
 
 // Reactive variables
 const expandedRows = ref([]);
@@ -270,15 +272,8 @@ const deleteChapter = async () => {
     }
 };
 
-const openFile = (file) => {
-    console.log(file);
-    
-    try {
-        window.open(file, '_blank');
-    } catch (error) {
-        console.log('Loi khi mo file: ', error);
-        showError('Lỗi khi mở file!');
-    }
+const goToStory = (id) => {
+    router.push({ name: 'viewDetail', params: { id: String(id) } });
 };
 
 // Utilities
@@ -288,10 +283,7 @@ const showError = (detail) => toast.add({ severity: 'error', summary: 'Lỗi', d
 const onFileSelect = (event) => (fileForm.value = event.files[0]);
 const getchaptertersForStory = (id) => chapterterData.value.filter((chapter) => chapter.storyID === id);
 const checkTypeStory = (id) => storyList.value.find((story) => story.id === id)?.typeStory !== 'TT';
-;
 const codeChapterData = (id) => {
-    console.log(id);
-    
     cloudCodeStory.value = id;
     dialogaddChapter.value = true;
 };
@@ -364,7 +356,7 @@ const codeChapterData = (id) => {
 
                             <Column :exportable="false" style="min-width: 8rem">
                                 <template #body="slotProps">
-                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="openFile(slotProps.data.data.urlImg)" />
+                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="goToStory(slotProps.data.detailID)" />
                                     <Button icon="pi pi-pencil" v-tooltip.top="'Sửa chương'" outlined rounded class="mr-2" @click="editChapterData(slotProps.data)" />
                                     <Button icon="pi pi-trash" v-tooltip.top="'Xóa chương'" outlined rounded severity="danger" @click="deleteChapterData(slotProps.data)" />
                                 </template>

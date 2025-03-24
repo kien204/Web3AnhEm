@@ -81,6 +81,11 @@ import { createRouter, createWebHistory } from 'vue-router';
                             path: '/view/quanlybinhluandanhgia',
                             name: 'quanlybinhluandanhgia',
                             component: () => import('@/admin/view/QuanLyBinhLuanDanhGia.vue')
+                        },
+                        {
+                            path: '/view/:id',
+                            name: 'viewDetail',
+                            component: () => import('@/admin/view/ViewDetail.vue')
                         }
                     ]
                 }   
