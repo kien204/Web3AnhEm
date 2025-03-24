@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const toast = useToast();
 const token = JSON.parse(localStorage.getItem('token'));
-const url = 'http://10.15.99.193:5041/api';
+const url = 'http://10.15.7.14:5041/api';
 
 // Reactive variables
 const expandedRows = ref([]);
@@ -356,7 +356,7 @@ const codeChapterData = (id) => {
 
                             <Column :exportable="false" style="min-width: 8rem">
                                 <template #body="slotProps">
-                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="goToStory(slotProps.data.data.detailID)" />
+                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="goToStory(slotProps.data.detailID)" />
                                     <Button icon="pi pi-pencil" v-tooltip.top="'Sửa chương'" outlined rounded class="mr-2" @click="editChapterData(slotProps.data)" />
                                     <Button icon="pi pi-trash" v-tooltip.top="'Xóa chương'" outlined rounded severity="danger" @click="deleteChapterData(slotProps.data)" />
                                 </template>
