@@ -288,7 +288,10 @@ const showError = (detail) => toast.add({ severity: 'error', summary: 'Lỗi', d
 const onFileSelect = (event) => (fileForm.value = event.files[0]);
 const getchaptertersForStory = (id) => chapterterData.value.filter((chapter) => chapter.storyID === id);
 const checkTypeStory = (id) => storyList.value.find((story) => story.id === id)?.typeStory !== 'TT';
+;
 const codeChapterData = (id) => {
+    console.log(id);
+    
     cloudCodeStory.value = id;
     dialogaddChapter.value = true;
 };
@@ -361,7 +364,7 @@ const codeChapterData = (id) => {
 
                             <Column :exportable="false" style="min-width: 8rem">
                                 <template #body="slotProps">
-                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="openFile(slotProps.data.urlImg)" />
+                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="openFile(slotProps.data.data.urlImg)" />
                                     <Button icon="pi pi-pencil" v-tooltip.top="'Sửa chương'" outlined rounded class="mr-2" @click="editChapterData(slotProps.data)" />
                                     <Button icon="pi pi-trash" v-tooltip.top="'Xóa chương'" outlined rounded severity="danger" @click="deleteChapterData(slotProps.data)" />
                                 </template>
@@ -514,8 +517,8 @@ const codeChapterData = (id) => {
                         id="fileForm"
                         name="tải file"
                         mode="basic"
-                        :accept="checkTypeStory(cloudeditChapter.id) ? 'text/plain' : 'application/pdf'"
-                        :chooseLabel="checkTypeStory(cloudeditChapter.id) ? 'Chọn tệp TXT' : 'Chọn tệp PDF'"
+                        :accept="checkTypeStory(cloudCodeStory) ? 'text/plain' : 'application/pdf'"
+                        :chooseLabel="checkTypeStory(cloudCodeStory) ? 'Chọn tệp TXT' : 'Chọn tệp PDF'"
                         :maxFileSize="10000000"
                         @select="onFileSelect"
                         class="w-full p-2 border border-gray-300 rounded-lg"
@@ -553,8 +556,8 @@ const codeChapterData = (id) => {
                         id="fileForm"
                         name="tải file"
                         mode="basic"
-                        :accept="checkTypeStory(cloudeditChapter.id) ? 'text/plain' : 'application/pdf'"
-                        :chooseLabel="checkTypeStory(cloudeditChapter.id) ? 'Chọn tệp TXT' : 'Chọn tệp PDF'"
+                        :accept="checkTypeStory(cloudeditChapter.storyID) ? 'text/plain' : 'application/pdf'"
+                        :chooseLabel="checkTypeStory(cloudeditChapter.storyID) ? 'Chọn tệp TXT' : 'Chọn tệp PDF'"
                         :maxFileSize="10000000"
                         @select="onFileSelect"
                         class="w-full p-2 border border-gray-300 rounded-lg"
