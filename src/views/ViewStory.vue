@@ -63,11 +63,11 @@ const dataChapter = ref([]);
 const selectedChapter = ref(null);
 const urlString = ref([]);
 const dataContent = ref('');
-
+const uri = ref('10.15.7.14');
 const fetchComments = async (id) => {
     if (!id) return;
     try {
-        const res = await axios.get(`http://10.15.99.193:5041/api/comments/${id}`);
+        const res = await axios.get(`http://${uri}:5041/api/comments/${id}`);
         comments.value = res.data;
     } catch (e) {
         console.error('Lỗi khi lấy bình luận:', e);
@@ -76,7 +76,7 @@ const fetchComments = async (id) => {
 
 const fetchChapters = async (storyID) => {
     try {
-        const res = await axios.get(`http://10.15.99.193:5041/api/DetailStory/get-chapter/${storyID}`);
+        const res = await axios.get(`http://${uri}:5041/api/DetailStory/get-chapter/${storyID}`);
         dataChapter.value = res.data.data;
         selectedChapter.value = pa.params.id;
     } catch (e) {
@@ -86,7 +86,7 @@ const fetchChapters = async (storyID) => {
 
 const fetchStoryContent = async (id) => {
     try {
-        const res = await axios.get(`http://10.15.99.193:5041/api/DetailStory/get-detailstory/${id}`);
+        const res = await axios.get(`http://${uri}:5041/api/DetailStory/get-detailstory/${id}`);
         if (res.data.data?.urlImg) {
             urlString.value = res.data.data.urlImg.trim().split(',');
         }
@@ -99,7 +99,7 @@ const fetchStoryContent = async (id) => {
 const saveComment = async () => {
     if (!newComment.value.trim()) return;
     try {
-        await axios.post('http://10.15.99.193:5041/api/comments', {
+        await axios.post(`http://${uri}:5041/api/comments`, {
             storyId: pa.params.id,
             text: newComment.value
         });
