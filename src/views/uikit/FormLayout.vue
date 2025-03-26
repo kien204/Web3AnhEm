@@ -1,6 +1,6 @@
 <template>
     <div class="w-full flex flex-col items-center p-6">
-        <h2 class="text-3xl font-bold text-orange-600 mb-6">📚 Chọn Thể Loại Truyện 📚</h2>
+        <h2 class="text-3xl font-bold text-orange-600 mb-6">Chọn Thể Loại Truyện</h2>
 
         <div class="card">
             <div class="flex justify-center" v-for="item in allGenres" :key="item">
@@ -16,7 +16,7 @@
 
     <!-- Danh sách truyện -->
     <div v-if="filteredStories.data" class="w-full max-w-7xl p-6 mt-6 rounded-md shadow-lg">
-        <h3 class="text-2xl font-semibold">✨ Kết quả tìm kiếm:</h3>
+        <h3 class="text-2xl font-semibold">Kết quả tìm kiếm: &#128165;</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4 overflow-hidden overflow-y-auto">
             <div v-for="(story, index) in filteredStories.data" :key="index" class="border-1 border-slate-200 rounded-md p-4 shadow-md transition-all hover:scale-105">
                 <div class="w-full h-40 flex items-center justify-center overflow-hidden">
@@ -45,10 +45,11 @@ const route = useRouter();
 const allGenres = ref([]);
 const selectedGenres = ref([]);
 const filteredStories = ref([]);
+const url = ref('http://localhost:5041');
 
 const fetchGenres = async () => {
     try {
-        const response = await fetch('http://localhost:5041/api/Story/get-type');
+        const response = await fetch(`${url.value}/api/Story/get-type`);
         const data = await response.json();
         for (let i = 0; i < data.data.length; i += 7) {
             allGenres.value.push(data.data.slice(i, i + 7));
@@ -67,7 +68,7 @@ const confirmSelection = async () => {
         } else {
             return;
         }
-        const response = await axios.get(`http://localhost:5041/api/Story/filter-story/${uri}`);
+        const response = await axios.get(`${url.value}/api/Story/filter-story/${uri}`);
         filteredStories.value = await response.data;
         console.log(filteredStories.value);
     } catch (error) {
@@ -81,7 +82,7 @@ const pushRoute = (id) => {
 
 const pushView = async (id) => {
     try {
-        const response = await axios.get(`${uri.value}:5041/api/DetailStory/get-chapter/${id}`);
+        const response = await axios.get(`${url.value}/api/DetailStory/get-chapter/${id}`);
         let data = await response.data;
         route.push(`/view-story/${data.data[0].detailId}`);
     } catch (e) {
