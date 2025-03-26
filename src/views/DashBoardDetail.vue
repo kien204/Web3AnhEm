@@ -67,7 +67,6 @@ const getAllDetail = async (id) => {
     try {
         const response = await axios.get(`${uri.value}:5041/api/DetailStory/get-chapter/${id}`);
         dataAll.value = await response.data;
-        // route.push(`view-story/${data.data[0].detailId}`);
     } catch (e) {
         console.log(e);
     }
