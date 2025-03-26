@@ -11,7 +11,7 @@ const dataFillter = ref([]);
 const searchKey = ref('');
 const layout = ref('grid');
 const options = ref(['list', 'grid']);
-const uri = ref('http://10.15.7.14');
+const uri = ref('http://localhost');
 const value2 = ref(2);
 const options2 = ref([
     { name: 'Truyện tranh', value: 1 },
