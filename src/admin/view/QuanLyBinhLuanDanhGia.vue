@@ -1,66 +1,17 @@
 <script setup>
 import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
 
 const token = JSON.parse(localStorage.getItem('token'));
-const url = 'http://10.15.7.14:5041/api';
+const url = 'http://10.15.105.114:5041/api';
 
 const expandedRows = ref([]);
-const cmtList = ref([{
-      "commentID": 1,
-      "detailID": 16,
-      "commentText": "truyen hay",
-      "ratting": 5,
-      "createdAt": "2025-03-24T15:28:06.484658",
-      "detailStory": null
-    },
-    {
-      "commentID": 2,
-      "detailID": 16,
-      "commentText": "truyen hay",
-      "ratting": 5,
-      "createdAt": "2025-03-24T15:28:07.6026564",
-      "detailStory": null
-    }
-]);
-const storyList = ref([
-    {
-        "id": 1,
-        "storyCode": "ST001",
-        "storyName": "Truyện 1",
-        "storyAuthor": "Tác giả 1",
-        "rating": 5
-    },
-    {
-        "id": 2,
-        "storyCode": "ST002",
-        "storyName": "Truyện 2",
-        "storyAuthor": "Tác giả 2",
-        "rating": 4
-    },
-    {
-        "id": 3,
-        "storyCode": "ST003",
-        "storyName": "Truyện 3",
-        "storyAuthor": "Tác giả 3",
-        "rating": 3
-    },
-    {
-        "id": 4,
-        "storyCode": "ST004",
-        "storyName": "Truyện 4",
-        "storyAuthor": "Tác giả 4",
-        "rating": 2
-    },
-    {
-        "id": 5,
-        "storyCode": "ST005",
-        "storyName": "Truyện 5",
-        "storyAuthor": "Tác giả 5",
-        "rating": 1
-    }
-]);
-const rating = ref(0);
+const cmtList = ref([]);
+const storyList = ref([]);
+const ratting = ref(0);
+const toast = useToast();
+
 
 // Filters
 const filtersStory = ref({
@@ -74,7 +25,7 @@ const filterschapterter = ref({
     chapterterCode: { value: null, matchMode: 'equals' }
 });
 
-// onMounted(() => getAllStory());
+onMounted(() => getAllStory());
 
 // API Calls
 const getAllStory = async () => {
@@ -82,10 +33,7 @@ const getAllStory = async () => {
         const [stories, comments] = await Promise.all([axios.get(`${url}/Story/getAll`), axios.get(`${url}/Comment/get-all-comment`)]);
         storyList.value = stories.data.data;
         cmtList.value = comments.data.data;
-        
-        console.log(cmtList.value);
-        
-        
+
     } catch (e) {
         console.error(e);
         toast.add({severity: 'error',summary: 'Lỗi',detail: 'Không thể lấy dữ liệu',life: 3000});
@@ -93,11 +41,110 @@ const getAllStory = async () => {
 };
 
 const calculateRating = (id) => {
-    const comments = cmtList.value.filter((cmt) => cmt.storyID === id);
-    const totalRating = comments.reduce((acc, cmt) => acc + cmt.rating, 0);
-    return totalRating / comments.length;
+    return id;
 };
 const getchaptertersForStory = (id) => cmtList.value.filter((cmt) => cmt.detailID === id);
+
+const formatDate = (date) => {
+  if (!date) return "N/A"; // Kiểm tra nếu giá trị rỗng
+  return new Date(date).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  });
+};
+
+const showDialog = ref(false);
+const showDialogEdit = ref(false);
+const showDialogDelete = ref(false);
+const payload = ref({
+    id: null,
+  ratting: null,
+  comment: "",
+});
+
+
+const saveComment = async () => {
+    payload.value.ratting < 1 ? (payload.value.ratting = 1) : '';
+    if (!payload.value.comment.trim() || !payload.value.id) {
+        toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Không để chống ô comment', life: 2000 });
+        return;
+    }
+    try {        
+        let res = await axios.post(`${url}/Comment/insert-comment`, payload.value);        
+        if (res) {
+            toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã thêm bình luận', life: 2000 });
+        }
+        getAllStory();
+        resetpayload();
+    } catch (e) {
+        toast.add({ severity: 'error', summary: 'Lỗi', detail: e.Message, life: 2000 });
+        console.error('Lỗi khi lưu bình luận:', e);
+    }
+  showDialog.value = false; // Đóng Dialog sau khi gửi
+};
+
+const editComment = async (data) => {
+    payload.value.id = data.commentID;
+    payload.value.ratting = data.ratting;
+    payload.value.comment = data.commentText;
+    
+    showDialogEdit.value = true;
+};
+
+const edittComment = async () => {
+    payload.value.ratting < 1 ? (payload.value.ratting = 1) : '';
+    if (!payload.value.comment.trim() || !payload.value.id) {
+        toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Không để chống ô comment', life: 2000 });
+        return;
+    }
+    try {        
+        let res = await axios.put(`${url}/Comment/update-comment`, payload.value, {
+            headers: { Authorization: `Bearer ${token}` }
+        });        
+        if (res) {
+            toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã sửa bình luận', life: 2000 });
+        }
+        console.log(payload.value);
+        getAllStory();
+        resetpayload();
+    } catch (e) {
+        toast.add({ severity: 'error', summary: 'Lỗi', detail: e.Message, life: 2000 });
+        console.error('Lỗi khi lưu bình luận:', e);
+    }
+  showDialogEdit.value = false; // Đóng Dialog sau khi gửi
+};
+
+const deleteComment = async (data) => {
+    payload.value.id = data.commentID;
+    payload.value.ratting = data.ratting;
+    payload.value.comment = data.commentText;
+    showDialogDelete.value = true;
+};
+const deleteeComment = async () => {
+    try {
+        let res = await axios.delete(`${url}/Comment/delete-comment/${payload.value.id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res) {
+            toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã xóa bình luận', life: 2000 });
+        }
+        getAllStory();
+        resetpayload();
+    } catch (e) {
+        toast.add({ severity: 'error', summary: 'Lỗi', detail: e.Message, life: 2000 });
+        console.error('Lỗi khi xóa bình luận:', e);
+    }
+    showDialogDelete.value = false;
+};
+
+const resetpayload = () => {
+    payload.value = {
+        id: null,
+        ratting: null,
+        comment: "",
+    };
+};
 </script>
 
 <template>
@@ -105,67 +152,96 @@ const getchaptertersForStory = (id) => cmtList.value.filter((cmt) => cmt.detailI
         <div class="card">
             <Toolbar class="mb-4">
                 <template #start>
-                    <Button label="Thêm truyện mới" icon="pi pi-plus" severity="success" class="mr-2" @click="dialogAddStory = true" />
+                    <Button label="Thêm bình luận mới" icon="pi pi-plus" severity="success" class="mr-2" @click="showDialog = true" />
                     <Button icon="pi pi-refresh" v-tooltip.top="'Làm mới'" rounded raised @click="getAllStory" />
                 </template>
             </Toolbar>
 
             <DataTable
-                :value="storyList"
-                dataKey="storyCode"
+                :value="cmtList"
+                dataKey="commentID"
                 :paginator="true"
-                :globalFilterFields="['storyName', 'storyCode']"
+                :globalFilterFields="['commentText', 'ratting' ]"
                 :filters="filtersStory"
                 :rows="10"
                 v-model:expandedRows="expandedRows"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Hiển thị từ {first} đến {last} trong {totalRecords} câu truyện"
-            >
+                currentPageReportTemplate="Hiển thị từ {first} đến {last} trong {totalRecords} binhf luaanj"          >
                 <template #header>
                     <IconField iconPosition="left">
                         <InputIcon>
                             <i class="pi pi-search" />
                         </InputIcon>
-                        <InputText v-model="filtersStory.global.value" placeholder="Nhập mã hoặc tên truyện" />
+                        <InputText v-model="filtersStory.global.value" placeholder="Nhập bình luận hoặc đánh giá" />
                     </IconField>
                 </template>
-                <Column expander style="width: 2rem" />
-                <Column field="storyCode" header="Mã Truyện" />
-                <Column field="storyName" header="Tên Truyện" />
-                <Column field="storyAuthor" header="Tác Giả" />
-                <Column field="rating" header="Reviews">
+                <Column field="commentID" header="Tác giả"><template #body="slotProps">Ẩn Danh {{slotProps.data.commentID}}</template></Column>
+                <Column field="detailID" header="Mã chương" />
+                <Column field="commentText" header="Bình luận" />
+                <Column field="ratting" header="Đánh giá">
                     <template #body="slotProps">
-                        <Rating :modelValue="calculateRating(slotProps.data.id)" readonly />
+                        <Rating :modelValue="calculateRating(slotProps.data.ratting)" readonly />
                     </template>
                 </Column>
-
-                <!-- template hiển thị các chương khi expandable -->
-                <template #expansion="slotProps">
-                    <div class="p-3">
-                        <h5>Danh sách chương - {{ slotProps.data.storyName }}</h5>
-                        <DataTable :value="getchaptertersForStory(slotProps.data.id)" responsiveLayout="scroll" :globalFilterFields="['sttName', 'detailID']" :filters="filterschapterter">
-                            <template #header>
-                                <IconField iconPosition="left">
-                                    <InputIcon>
-                                        <i class="pi pi-search" />
-                                    </InputIcon>
-                                    <InputText v-model="filterschapterter.global.value" placeholder="Nhập mã hoặc tên chương" />
-                                    <Button label="Thêm chương mới" icon="pi pi-plus" severity="success" class="ml-2" @click="codeChapterData(slotProps.data.id)" />
-                                </IconField>
-                            </template>
-
-                            <Column :exportable="false" style="min-width: 8rem">
-                                <template #body="slotProps">
-                                    <Button icon="pi pi-eye" v-tooltip.top="'Xem trước'" outlined rounded class="mr-2" @click="goToStory(slotProps.data.detailID)" />
-                                    <Button icon="pi pi-pencil" v-tooltip.top="'Sửa chương'" outlined rounded class="mr-2" @click="editChapterData(slotProps.data)" />
-                                    <Button icon="pi pi-trash" v-tooltip.top="'Xóa chương'" outlined rounded severity="danger" @click="deleteChapterData(slotProps.data)" />
-                                </template>
-                            </Column>
-                        </DataTable>
-                    </div>
-                </template>
+                <Column field="createdAt" header="Ngày bình luận">
+                    <template #body="slotProps">
+                        {{ formatDate(slotProps.data.createdAt) }}
+                    </template>
+                </Column>
+                <Column :exportable="false" style="min-width: 8rem">
+                    <template #body="slotProps">
+                        <Button icon="pi pi-pencil" v-tooltip.top="'Sửa chương'" outlined rounded class="mr-2" @click="editComment(slotProps.data)" />
+                        <Button icon="pi pi-trash" v-tooltip.top="'Xóa chương'" outlined rounded severity="danger" @click="deleteComment(slotProps.data)" />
+                    </template>
+                </Column>
             </DataTable>
         </div>
+
+    <!-- Dialog nhập bình luận -->
+    <Dialog v-model:visible="showDialog" header="Thêm bình luận" :modal="true" :closable="true">
+      <div class="flex flex-col gap-6 w-[300px]">
+        <Rating v-model="payload.ratting"/>
+        <InputText type="text" v-model="payload.id" class="flex-1" placeholder="Nhập mã chương" />
+        <InputText type="text" v-model="payload.comment" class="flex-1" placeholder="Nhập bình luận" />
+      </div>
+
+      <!-- Footer của Dialog -->
+      <template #footer>
+        <Button label="Hủy" icon="pi pi-times" severity="secondary" @click="showDialog = false" />
+        <Button label="Gửi" icon="pi pi-check" severity="info" @click="saveComment" />
+      </template>
+    </Dialog>
+    
+    <!-- Dialog suawr bình luận -->
+    <Dialog v-model:visible="showDialogEdit" header="Sửa bình luận" :modal="true" :closable="true">
+      <div class="flex flex-col gap-6 w-[300px]">
+        <Rating v-model="payload.ratting"/>
+        <InputText type="text" v-model="payload.id" class="flex-1" :placeholder="payload.id" />
+        <InputText type="text" v-model="payload.comment" class="flex-1" :placeholder="payload.comment" />
+      </div>
+
+      <!-- Footer của Dialog -->
+      <template #footer>
+        <Button label="Hủy" icon="pi pi-times" severity="secondary" @click="showDialogEdit = false" />
+        <Button label="Gửi" icon="pi pi-check" severity="info" @click="edittComment" />
+      </template>
+    </Dialog>
+
+    <!-- dialog xác nhận xóa binh luan -->
+    <Dialog v-model:visible="showDialogDelete" :style="{ width: '450px' }" header="Xóa chương" :modal="true">
+        <div class="confirmation-content">
+            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+            <span v-if="payload"
+                >Bạn chắc chắn muốn xóa bình luận <b>Ẩn Danh{{ payload.id }}</b
+                >?</span
+            >
+        </div>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" text @click="showDialogDelete = false" />
+            <Button label="Yes" icon="pi pi-check" text @click="deleteeComment" />
+        </template>
+    </Dialog>
+
     </div>
 </template>

@@ -93,7 +93,7 @@ const dataChapter = ref([]);
 const selectedChapter = ref();
 const urlString = ref([]);
 const dataContent = ref('');
-const uri = ref('http://localhost');
+const uri = ref('http://10.15.105.114');
 const vis = ref(false);
 
 const show = ref({
