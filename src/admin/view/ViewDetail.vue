@@ -1,16 +1,14 @@
 <template>
     <div class="w-full flex flex-col items-center gap-6">
         <!-- Hiển thị hình ảnh hoặc nội dung truyện -->
-        <div class="w-full max-w-6xl p-6 bg-white shadow-2xl rounded-lg overflow-hidden">
-            <div class="overflow-y-auto max-h-[85vh] p-4 border rounded-lg">
-                <div v-if="urlString.length > 0">
-                    <div v-for="img in urlString" :key="img" class="flex justify-center mb-4">
-                        <img :src="img" alt="" class="w-full max-w-5xl rounded-lg shadow-lg border" />
-                    </div>
+        <div class="w-full max-w-6xl p-6 bg-white shadow-2xl rounded-lg">
+            <div v-if="urlString.length > 0">
+                <div v-for="img in urlString" :key="img" class="flex justify-center mb-4">
+                    <img :src="img" alt="" class="w-full max-w-5xl rounded-lg shadow-lg border" />
                 </div>
-                <div v-else>
-                    <div v-html="dataContent" class="max-h-[85vh] overflow-y-auto p-6 border rounded-lg"></div>
-                </div>
+            </div>
+            <div v-else>
+                <div v-html="dataContent" class="p-6 border rounded-lg"></div>
             </div>
         </div>
     </div>

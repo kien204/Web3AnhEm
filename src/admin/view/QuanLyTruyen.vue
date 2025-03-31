@@ -170,14 +170,16 @@ const editStory = async () => {
     if (!validateEditStoryForm()) return showError('Vui lòng nhập đầy đủ thông tin');
     try {
         const updatedStory = {
-            id: cloudEditStory.value.id,
+            id: String(cloudEditStory.value.id),
             storyName: storyNameForm.value,
             coverImage: coverImageForm.value,
             description: descriptionForm.value,
             storyAuthor: storyAuthorForm.value,
             typeDetailStory: typeDetailStoryForm.value.join(',') + ',' + AddTypeDetailStoryForm.value
         };
+        
         await axios.put(`${url}/Story/update-story`, updatedStory, { headers: { Authorization: `Bearer ${token}` } });
+        await getAllStory();
         resetStoryForm();
         dialogEditStory.value = false;
         showSuccess('Sửa truyện thành công');
