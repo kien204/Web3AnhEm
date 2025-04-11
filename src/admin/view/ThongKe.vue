@@ -1,31 +1,85 @@
 <script setup>
 import { ref } from "vue";
+import { onMounted } from "vue";
+import { useToast } from "primevue/usetoast";
+import axios from "axios";
+import Chart from "primevue/chart";
+import { computed } from "vue";
 
-const listType = ref(["siêu nhân", "Cổ tích", "biến hình"])
 
-const readData = ref({
-  labels: ["01/03", "02/03", "03/03", "04/03", "05/03"],
+const toast = useToast();
+const url = 'https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api'
+const listTotalType = ref([])
+const listTopView = ref([]);
+const listToptypeView = ref([]);
+
+onMounted(() => getAll());
+
+ // API Calls
+const getAll = async () => {
+    try {
+      const token = JSON.parse(localStorage.getItem('token'));
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      
+      const [totalType, topView, topTypeView] = await Promise.all([
+        axios.get(`${url}/ServiceStoty/get-statistic/total-type`, config),
+        axios.get(`${url}/ServiceStoty/get-statistic/top-view`, config),
+        axios.get(`${url}/ServiceStoty/get-statistic/top-type-view`, config),
+      ]);      
+
+      listTotalType.value = totalType.data.data;
+      listTopView.value = topView.data.data;
+      listToptypeView.value = topTypeView.data.data;
+
+    } catch (e) {
+        console.error(e);
+        toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Không thể lấy dữ liệu', life: 3000 });
+    }
+};
+
+
+const data1 = computed(() => ({
+  labels: listTotalType.value.map(item => item.genre),
   datasets: [
     {
-      label: "Lượt đọc",
-      data: [320, 450, 370, 500, 620],
-      fill: false,
-      borderColor: "#42A5F5",
-      tension: 0.4,
+      label: "Số lượng",
+      data: listTotalType.value.map(item => item.storyCount),
+      backgroundColor: "#FFA726",
     },
-  ],
-});
-
-const popularStories = ref({
-  labels: listType,
-  datasets: [
     {
-      label: "Lượt đọc",
-      data: [5200, 4300, 3900, 3100, 2700],
+      label: "Lượt xem",
+      data: listToptypeView.value.map(item => item.viewCount),
       backgroundColor: "#FFA726",
     },
   ],
-});
+}));
+
+const data2 = computed(() => ({
+  labels: listTopView.value.map(item => item.storyName),
+  datasets: [
+    {
+      label: "Lượt đọc",
+      data: listTopView.value.map(item => item.viewCount),
+      backgroundColor: "#42A5F5",
+    },
+  ],
+}));
+
+const data3 = computed(() => ({
+  labels: listToptypeView.value.map(item => item.genre),
+  datasets: [
+    {
+      label: "Lượt đọc",
+      data: listToptypeView.value.map(item => item.viewCount),
+      backgroundColor: "#EF5350",
+    },
+  ],
+}));
+
 
 const chartOptions = ref({
   responsive: true,
@@ -36,12 +90,9 @@ const chartOptions = ref({
 <template>
   <div class="p-5">
     <h2 class="text-lg font-bold">Tổng số truyện theo từng thể loại</h2>
-    <Chart type="bar" :data="popularStories" :options="chartOptions" class="w-full h-64" />
-
-    <h2 class="text-lg font-bold mt-5">Số lượt đọc theo ngày</h2>
-    <Chart type="line" :data="readData" :options="chartOptions" class="w-full h-64" />
+    <Chart type="bar" :data="data1" :options="chartOptions" class="w-full h-64" />
 
     <h2 class="text-lg font-bold mt-5">Truyện phổ biến nhất</h2>
-    <Chart type="bar" :data="popularStories" :options="chartOptions" class="w-full h-64" />
+    <Chart type="bar" :data="data2" :options="chartOptions" class="w-full h-64" />
   </div>
 </template>

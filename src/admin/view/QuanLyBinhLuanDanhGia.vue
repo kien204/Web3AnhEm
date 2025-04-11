@@ -4,7 +4,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 
 const token = JSON.parse(localStorage.getItem('token'));
-const url = 'http://10.15.105.114:5041/api';
+const url = 'https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api';
 
 const expandedRows = ref([]);
 const cmtList = ref([]);
