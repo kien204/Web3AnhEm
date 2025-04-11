@@ -48,12 +48,12 @@ const data1 = computed(() => ({
     {
       label: "Số lượng",
       data: listTotalType.value.map(item => item.storyCount),
-      backgroundColor: "#FFA726",
+      backgroundColor: "#42A5F5",
     },
     {
-      label: "Lượt xem",
+      label: "Lượt đọc",
       data: listToptypeView.value.map(item => item.viewCount),
-      backgroundColor: "#FFA726",
+      backgroundColor: "#EF5350",
     },
   ],
 }));
@@ -64,7 +64,7 @@ const data2 = computed(() => ({
     {
       label: "Lượt đọc",
       data: listTopView.value.map(item => item.viewCount),
-      backgroundColor: "#42A5F5",
+      backgroundColor: "#EF5350",
     },
   ],
 }));
