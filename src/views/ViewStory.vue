@@ -93,7 +93,7 @@ const dataChapter = ref([]);
 const selectedChapter = ref();
 const urlString = ref([]);
 const dataContent = ref('');
-const uri = ref('http://10.15.105.114');
+const uri = ref('https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api');
 const vis = ref(false);
 
 const show = ref({
@@ -124,7 +124,7 @@ window.addEventListener('scroll', () => {
 
 const fetchChapters = async (storyID) => {
     try {
-        const res = await axios.get(`${uri.value}:5041/api/DetailStory/get-chapter/${storyID}`);
+        const res = await axios.get(`${uri.value}/DetailStory/get-chapter/${storyID}`);
         dataChapter.value = res.data.data;
         selectedChapter.value = parseInt(pa.params.id);
         nextOrback(selectedChapter.value, 0);
@@ -135,7 +135,7 @@ const fetchChapters = async (storyID) => {
 
 const fetchStoryContent = async (id) => {
     try {
-        const res = await axios.get(`${uri.value}:5041/api/DetailStory/get-detailstory/${id}`);
+        const res = await axios.get(`${uri.value}/DetailStory/get-detailstory/${id}`);
         if (res.data.data?.urlImg) {
             urlString.value = res.data.data.urlImg.trim().split(',');
         }
@@ -149,7 +149,7 @@ const fetchStoryContent = async (id) => {
 const fetchComments = async (id) => {
     if (!id) return;
     try {
-        const res = await axios.get(`${uri.value}:5041/api/Comment/get-all-comment?id=${id}`);
+        const res = await axios.get(`${uri.value}/Comment/get-all-comment?id=${id}`);
         comments.value = res.data.data ?? [];
     } catch (e) {
         console.error('Lỗi khi lấy bình luận:', e);
@@ -164,7 +164,7 @@ const saveComment = async () => {
         return;
     }
     try {
-        let res = await axios.post(`${uri.value}:5041/api/Comment/insert-comment`, payload.value);
+        let res = await axios.post(`${uri.value}/Comment/insert-comment`, payload.value);
         if (res) {
             toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã thêm bình luận', life: 2000 });
         }

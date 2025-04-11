@@ -53,7 +53,7 @@ const params = ref();
 const story = ref({});
 const dataAll = ref([]);
 const checkMore = ref(false);
-const uri = ref('http://localhost');
+const uri = ref('https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api');
 const formatDate = (dateStr) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateStr).toLocaleDateString(undefined, options);
@@ -65,7 +65,7 @@ const pushView = (id) => {
 
 const getAllDetail = async (id) => {
     try {
-        const response = await axios.get(`${uri.value}:5041/api/DetailStory/get-chapter/${id}`);
+        const response = await axios.get(`${uri.value}/DetailStory/get-chapter/${id}`);
         dataAll.value = await response.data;
     } catch (e) {
         console.log(e);
@@ -74,7 +74,7 @@ const getAllDetail = async (id) => {
 
 const getStory = async (id) => {
     try {
-        const res = await axios.get(`${uri.value}:5041/api/Story/getAll?id=${id}`);
+        const res = await axios.get(`${uri.value}/Story/getAll?id=${id}`);
         story.value = await res.data.data[0];
     } catch (e) {
         console.log(e);
