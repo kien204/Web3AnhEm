@@ -19,15 +19,7 @@ const show = (check, statu, content) => {
 
 const login = async () => {
     try {
-<<<<<<< HEAD
         let res = await axios.post(`http://10.10.33.29:5041/api/Login/login`, {
-=======
-        if (email.value != 'admin' || password.value != 'admin') {
-            show('error', 'Lỗi', 'Tài khoản hoặc mật khẩu không đúng!');
-            return;
-        }
-        let res = await axios.post(`https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api/Login/login`, {
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
             userName: email.value,
             pass: password.value
         });

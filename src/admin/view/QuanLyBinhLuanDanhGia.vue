@@ -1,69 +1,5 @@
 <script setup>
 import axios from 'axios';
-<<<<<<< HEAD
-import { ref } from 'vue';
-
-const token = JSON.parse(localStorage.getItem('token'));
-const url = 'http://10.10.33.29:5041/api';
-
-const expandedRows = ref([]);
-const cmtList = ref([
-    {
-        commentID: 1,
-        detailID: 16,
-        commentText: 'truyen hay',
-        ratting: 5,
-        createdAt: '2025-03-24T15:28:06.484658',
-        detailStory: null
-    },
-    {
-        commentID: 2,
-        detailID: 16,
-        commentText: 'truyen hay',
-        ratting: 5,
-        createdAt: '2025-03-24T15:28:07.6026564',
-        detailStory: null
-    }
-]);
-const storyList = ref([
-    {
-        id: 1,
-        storyCode: 'ST001',
-        storyName: 'Truyện 1',
-        storyAuthor: 'Tác giả 1',
-        rating: 5
-    },
-    {
-        id: 2,
-        storyCode: 'ST002',
-        storyName: 'Truyện 2',
-        storyAuthor: 'Tác giả 2',
-        rating: 4
-    },
-    {
-        id: 3,
-        storyCode: 'ST003',
-        storyName: 'Truyện 3',
-        storyAuthor: 'Tác giả 3',
-        rating: 3
-    },
-    {
-        id: 4,
-        storyCode: 'ST004',
-        storyName: 'Truyện 4',
-        storyAuthor: 'Tác giả 4',
-        rating: 2
-    },
-    {
-        id: 5,
-        storyCode: 'ST005',
-        storyName: 'Truyện 5',
-        storyAuthor: 'Tác giả 5',
-        rating: 1
-    }
-]);
-const rating = ref(0);
-=======
 import { computed, onMounted, ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 
@@ -76,7 +12,6 @@ const storyList = ref([]);
 const ratting = ref(0);
 const toast = useToast();
 
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
 
 // Filters
 const filtersStory = ref({
@@ -98,11 +33,6 @@ const getAllStory = async () => {
         const [stories, comments] = await Promise.all([axios.get(`${url}/Story/getAll`), axios.get(`${url}/Comment/get-all-comment`)]);
         storyList.value = stories.data.data;
         cmtList.value = comments.data.data;
-
-<<<<<<< HEAD
-        console.log(cmtList.value);
-=======
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
     } catch (e) {
         console.error(e);
         toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Không thể lấy dữ liệu', life: 3000 });

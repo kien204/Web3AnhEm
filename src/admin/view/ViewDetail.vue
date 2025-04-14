@@ -28,11 +28,7 @@ console.log('Đang xem truyện với ID:', pa.params.id);
 
 const getAllDetail = async (id) => {
     try {
-<<<<<<< HEAD
-        const res = await axios.get(`http://10.10.33.29:5041/api/DetailStory/get-detailstory/${id}`);
-=======
         const res = await axios.get(`https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api/DetailStory/get-detailstory/${id}`);
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
         dataAll.value = res.data;
         if (dataAll.value.data?.urlImg) {
             urlString.value = dataAll.value.data.urlImg.trim().split(',');
