@@ -19,16 +19,20 @@ const show = (check, statu, content) => {
 
 const login = async () => {
     try {
+<<<<<<< HEAD
         let res = await axios.post(`http://10.10.33.29:5041/api/Login/login`, {
+=======
+        if (email.value != 'admin' || password.value != 'admin') {
+            show('error', 'Lỗi', 'Tài khoản hoặc mật khẩu không đúng!');
+            return;
+        }
+        let res = await axios.post(`https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api/Login/login`, {
+>>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
             userName: email.value,
             pass: password.value
         });
         await localStorage.setItem('token', JSON.stringify(await res.data.token));
-        if (res) {
-            router.push({ name: 'homeadmin' });
-        } else {
-            console.log('Tài khoản hoặc mật khẩu không đúng');
-        }
+        router.push({ name: 'homeadmin' });
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -60,8 +64,8 @@ const login = async () => {
                                 />
                             </g>
                         </svg>
-                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
-                        <span class="text-muted-color font-medium">Sign in to continue</span>
+                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Tập đoàn 3 Anh Em!</div>
+                        <span class="text-muted-color font-medium">Đăng nhập đi</span>
                     </div>
 
                     <div>
@@ -69,7 +73,7 @@ const login = async () => {
                         <InputText id="email1" type="text" placeholder="Tài khoản" class="w-full md:w-[30rem] mb-8" v-model="email" />
 
                         <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Mật khẩu:</label>
-                        <Password id="password1" v-model="password" placeholder="Mật khẩu" :toggleMask="true" class="mb-4" fluid :feedback="false"></Password>
+                        <Password id="password1" @keyup.enter="login" v-model="password" placeholder="Mật khẩu" :toggleMask="true" class="mb-4" fluid :feedback="false"></Password>
 
                         <Button label="Đăng nhập" class="w-full mt-4" @click="login"></Button>
                     </div>
