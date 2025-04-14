@@ -4,14 +4,13 @@ import { computed, onMounted, ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 
 const token = JSON.parse(localStorage.getItem('token'));
-const url = 'https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api';
+const url = 'http://10.10.33.29:5041/api';
 
 const expandedRows = ref([]);
 const cmtList = ref([]);
 const storyList = ref([]);
 const ratting = ref(0);
 const toast = useToast();
-
 
 // Filters
 const filtersStory = ref({
@@ -45,12 +44,12 @@ const calculateRating = (id) => {
 const getchaptertersForStory = (id) => cmtList.value.filter((cmt) => cmt.detailID === id);
 
 const formatDate = (date) => {
-  if (!date) return "N/A"; // Kiểm tra nếu giá trị rỗng
-  return new Date(date).toLocaleDateString("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-  });
+    if (!date) return 'N/A'; // Kiểm tra nếu giá trị rỗng
+    return new Date(date).toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
 };
 
 const showDialog = ref(false);
@@ -58,10 +57,9 @@ const showDialogEdit = ref(false);
 const showDialogDelete = ref(false);
 const payload = ref({
     id: null,
-  ratting: null,
-  comment: "",
+    ratting: null,
+    comment: ''
 });
-
 
 const saveComment = async () => {
     payload.value.ratting < 1 ? (payload.value.ratting = 1) : '';
@@ -69,8 +67,8 @@ const saveComment = async () => {
         toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Không để chống ô comment', life: 2000 });
         return;
     }
-    try {        
-        let res = await axios.post(`${url}/Comment/insert-comment`, payload.value);        
+    try {
+        let res = await axios.post(`${url}/Comment/insert-comment`, payload.value);
         if (res) {
             toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã thêm bình luận', life: 2000 });
         }
@@ -80,14 +78,14 @@ const saveComment = async () => {
         toast.add({ severity: 'error', summary: 'Lỗi', detail: e.Message, life: 2000 });
         console.error('Lỗi khi lưu bình luận:', e);
     }
-  showDialog.value = false; // Đóng Dialog sau khi gửi
+    showDialog.value = false; // Đóng Dialog sau khi gửi
 };
 
 const editComment = async (data) => {
     payload.value.id = data.commentID;
     payload.value.ratting = data.ratting;
     payload.value.comment = data.commentText;
-    
+
     showDialogEdit.value = true;
 };
 
@@ -97,10 +95,10 @@ const edittComment = async () => {
         toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Không để chống ô comment', life: 2000 });
         return;
     }
-    try {        
+    try {
         let res = await axios.put(`${url}/Comment/update-comment`, payload.value, {
             headers: { Authorization: `Bearer ${token}` }
-        });        
+        });
         if (res) {
             toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã sửa bình luận', life: 2000 });
         }
@@ -111,7 +109,7 @@ const edittComment = async () => {
         toast.add({ severity: 'error', summary: 'Lỗi', detail: e.Message, life: 2000 });
         console.error('Lỗi khi lưu bình luận:', e);
     }
-  showDialogEdit.value = false; // Đóng Dialog sau khi gửi
+    showDialogEdit.value = false; // Đóng Dialog sau khi gửi
 };
 
 const deleteComment = async (data) => {
@@ -141,7 +139,7 @@ const resetpayload = () => {
     payload.value = {
         id: null,
         ratting: null,
-        comment: "",
+        comment: ''
     };
 };
 </script>
@@ -160,13 +158,14 @@ const resetpayload = () => {
                 :value="cmtList"
                 dataKey="commentID"
                 :paginator="true"
-                :globalFilterFields="['commentText', 'ratting' ]"
+                :globalFilterFields="['commentText', 'ratting']"
                 :filters="filtersStory"
                 :rows="10"
                 v-model:expandedRows="expandedRows"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 :rowsPerPageOptions="[5, 10, 25]"
-                currentPageReportTemplate="Hiển thị từ {first} đến {last} trong {totalRecords} binhf luaanj"          >
+                currentPageReportTemplate="Hiển thị từ {first} đến {last} trong {totalRecords} binhf luaanj"
+            >
                 <template #header>
                     <IconField iconPosition="left">
                         <InputIcon>
@@ -175,7 +174,9 @@ const resetpayload = () => {
                         <InputText v-model="filtersStory.global.value" placeholder="Nhập bình luận hoặc đánh giá" />
                     </IconField>
                 </template>
-                <Column field="commentID" header="Tác giả"><template #body="slotProps">Ẩn Danh {{slotProps.data.commentID}}</template></Column>
+                <Column field="commentID" header="Tác giả"
+                    ><template #body="slotProps">Ẩn Danh {{ slotProps.data.commentID }}</template></Column
+                >
                 <Column field="detailID" header="Mã chương" />
                 <Column field="commentText" header="Bình luận" />
                 <Column field="ratting" header="Đánh giá">
@@ -197,50 +198,49 @@ const resetpayload = () => {
             </DataTable>
         </div>
 
-    <!-- Dialog nhập bình luận -->
-    <Dialog v-model:visible="showDialog" header="Thêm bình luận" :modal="true" :closable="true">
-      <div class="flex flex-col gap-6 w-[300px]">
-        <Rating v-model="payload.ratting"/>
-        <InputText type="text" v-model="payload.id" class="flex-1" placeholder="Nhập mã chương" />
-        <InputText type="text" v-model="payload.comment" class="flex-1" placeholder="Nhập bình luận" />
-      </div>
+        <!-- Dialog nhập bình luận -->
+        <Dialog v-model:visible="showDialog" header="Thêm bình luận" :modal="true" :closable="true">
+            <div class="flex flex-col gap-6 w-[300px]">
+                <Rating v-model="payload.ratting" />
+                <InputText type="text" v-model="payload.id" class="flex-1" placeholder="Nhập mã chương" />
+                <InputText type="text" v-model="payload.comment" class="flex-1" placeholder="Nhập bình luận" />
+            </div>
 
-      <!-- Footer của Dialog -->
-      <template #footer>
-        <Button label="Hủy" icon="pi pi-times" severity="secondary" @click="showDialog = false" />
-        <Button label="Gửi" icon="pi pi-check" severity="info" @click="saveComment" />
-      </template>
-    </Dialog>
-    
-    <!-- Dialog suawr bình luận -->
-    <Dialog v-model:visible="showDialogEdit" header="Sửa bình luận" :modal="true" :closable="true">
-      <div class="flex flex-col gap-6 w-[300px]">
-        <Rating v-model="payload.ratting"/>
-        <InputText type="text" v-model="payload.id" class="flex-1" :placeholder="payload.id" />
-        <InputText type="text" v-model="payload.comment" class="flex-1" :placeholder="payload.comment" />
-      </div>
+            <!-- Footer của Dialog -->
+            <template #footer>
+                <Button label="Hủy" icon="pi pi-times" severity="secondary" @click="showDialog = false" />
+                <Button label="Gửi" icon="pi pi-check" severity="info" @click="saveComment" />
+            </template>
+        </Dialog>
 
-      <!-- Footer của Dialog -->
-      <template #footer>
-        <Button label="Hủy" icon="pi pi-times" severity="secondary" @click="showDialogEdit = false" />
-        <Button label="Gửi" icon="pi pi-check" severity="info" @click="edittComment" />
-      </template>
-    </Dialog>
+        <!-- Dialog suawr bình luận -->
+        <Dialog v-model:visible="showDialogEdit" header="Sửa bình luận" :modal="true" :closable="true">
+            <div class="flex flex-col gap-6 w-[300px]">
+                <Rating v-model="payload.ratting" />
+                <InputText type="text" v-model="payload.id" class="flex-1" :placeholder="payload.id" />
+                <InputText type="text" v-model="payload.comment" class="flex-1" :placeholder="payload.comment" />
+            </div>
 
-    <!-- dialog xác nhận xóa binh luan -->
-    <Dialog v-model:visible="showDialogDelete" :style="{ width: '450px' }" header="Xóa chương" :modal="true">
-        <div class="confirmation-content">
-            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-            <span v-if="payload"
-                >Bạn chắc chắn muốn xóa bình luận <b>Ẩn Danh{{ payload.id }}</b
-                >?</span
-            >
-        </div>
-        <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="showDialogDelete = false" />
-            <Button label="Yes" icon="pi pi-check" text @click="deleteeComment" />
-        </template>
-    </Dialog>
+            <!-- Footer của Dialog -->
+            <template #footer>
+                <Button label="Hủy" icon="pi pi-times" severity="secondary" @click="showDialogEdit = false" />
+                <Button label="Gửi" icon="pi pi-check" severity="info" @click="edittComment" />
+            </template>
+        </Dialog>
 
+        <!-- dialog xác nhận xóa binh luan -->
+        <Dialog v-model:visible="showDialogDelete" :style="{ width: '450px' }" header="Xóa chương" :modal="true">
+            <div class="confirmation-content">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+                <span v-if="payload"
+                    >Bạn chắc chắn muốn xóa bình luận <b>Ẩn Danh{{ payload.id }}</b
+                    >?</span
+                >
+            </div>
+            <template #footer>
+                <Button label="No" icon="pi pi-times" text @click="showDialogDelete = false" />
+                <Button label="Yes" icon="pi pi-check" text @click="deleteeComment" />
+            </template>
+        </Dialog>
     </div>
 </template>

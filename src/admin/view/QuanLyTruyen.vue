@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const toast = useToast();
 const token = JSON.parse(localStorage.getItem('token'));
-const url = 'https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api';
+const url = 'http://10.10.33.29:5041/api';
 
 // Reactive variables
 const expandedRows = ref([]);
