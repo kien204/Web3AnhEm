@@ -29,11 +29,11 @@ import { createRouter, createWebHistory } from 'vue-router';
                             name: 'button',
                             component: () => import('@/views/uikit/ButtonDoc.vue')
                         },
-                        {
-                            path: '/uikit/table',
-                            name: 'table',
-                            component: () => import('@/views/uikit/TableDoc.vue')
-                        },
+                        // {
+                        //     path: '/uikit/table',
+                        //     name: 'table',
+                        //     component: () => import('@/views/uikit/TableDoc.vue')
+                        // },
                         {
                             path: '/detail/:id',
                             name: 'dashboarddetail',
