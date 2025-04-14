@@ -93,11 +93,8 @@ const dataChapter = ref([]);
 const selectedChapter = ref();
 const urlString = ref([]);
 const dataContent = ref('');
-<<<<<<< HEAD
+
 const uri = ref('http://10.10.33.29:5041');
-=======
-const uri = ref('https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api');
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
 const vis = ref(false);
 
 const show = ref({
@@ -164,11 +161,7 @@ window.addEventListener('scroll', () => {
 // Lấy danh sách chương của truyện
 const fetchChapters = async (storyID) => {
     try {
-<<<<<<< HEAD
         const res = await axios.get(`${uri.value}/api/DetailStory/get-chapter/${storyID}`);
-=======
-        const res = await axios.get(`${uri.value}/DetailStory/get-chapter/${storyID}`);
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
         dataChapter.value = res.data.data;
         selectedChapter.value = parseInt(pa.params.id);
         nextOrback(selectedChapter.value, 0);
@@ -180,17 +173,11 @@ const fetchChapters = async (storyID) => {
 // Lấy nội dung truyện và lưu vào lịch sử
 const fetchStoryContent = async (id) => {
     try {
-<<<<<<< HEAD
         const res = await axios.get(`${uri.value}/api/DetailStory/get-detailstory/${id}`);
         const storyData = res.data.data;
 
         if (storyData?.urlImg) {
             urlString.value = storyData.urlImg.trim().split(',');
-=======
-        const res = await axios.get(`${uri.value}/DetailStory/get-detailstory/${id}`);
-        if (res.data.data?.urlImg) {
-            urlString.value = res.data.data.urlImg.trim().split(',');
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
         }
 
         dataContent.value = storyData?.content || '';
@@ -206,11 +193,7 @@ const fetchStoryContent = async (id) => {
 const fetchComments = async (id) => {
     if (!id) return;
     try {
-<<<<<<< HEAD
         const res = await axios.get(`${uri.value}/api/Comment/get-all-comment?id=${id}`);
-=======
-        const res = await axios.get(`${uri.value}/Comment/get-all-comment?id=${id}`);
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
         comments.value = res.data.data ?? [];
     } catch (e) {
         console.error('Lỗi khi lấy bình luận:', e);
@@ -225,11 +208,7 @@ const saveComment = async () => {
         return;
     }
     try {
-<<<<<<< HEAD
         let res = await axios.post(`${uri.value}/api/Comment/insert-comment`, payload.value);
-=======
-        let res = await axios.post(`${uri.value}/Comment/insert-comment`, payload.value);
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
         if (res) {
             toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã thêm bình luận', life: 2000 });
         }

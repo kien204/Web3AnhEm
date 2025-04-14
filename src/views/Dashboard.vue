@@ -11,11 +11,8 @@ const dataFillter = ref([]);
 const searchKey = ref('');
 const layout = ref('grid');
 const options = ref(['list', 'grid']);
-<<<<<<< HEAD
 const uri = ref('http://10.10.33.29:5041');
-=======
-const uri = ref('https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api');
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
+// const uri = ref('https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net/api');
 const value2 = ref(2);
 const options2 = ref([
     { name: 'Truyện tranh', value: 1 },
@@ -24,11 +21,7 @@ const options2 = ref([
 ]);
 const getAll = async () => {
     try {
-<<<<<<< HEAD
         const response = await axios.get(`${uri.value}/api/Story/getAll`);
-=======
-        const response = await axios.get(`${uri.value}/Story/getAll`);
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
         data.value = await response.data;
     } catch (e) {
         console.log(e);
@@ -37,11 +30,7 @@ const getAll = async () => {
 
 const getTopTT = async () => {
     try {
-<<<<<<< HEAD
         const response = await axios.get(`${uri.value}/api/Story/get-top-view/10/TT`);
-=======
-        const response = await axios.get(`${uri.value}/Story/get-top-view/10/TT`);
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
         dataTopTT.value = await response.data;
         console.log(dataTopTT.value);
     } catch (e) {
@@ -51,11 +40,7 @@ const getTopTT = async () => {
 
 const getTopTC = async () => {
     try {
-<<<<<<< HEAD
         const response = await axios.get(`${uri.value}/api/Story/get-top-view/10/TC`);
-=======
-        const response = await axios.get(`${uri.value}/Story/get-top-view/10/TC`);
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
         dataTopTC.value = await response.data;
     } catch (e) {
         console.log(e);
@@ -64,11 +49,7 @@ const getTopTC = async () => {
 
 const pushView = async (id) => {
     try {
-<<<<<<< HEAD
         const response = await axios.get(`${uri.value}/api/DetailStory/get-chapter/${id}`);
-=======
-        const response = await axios.get(`${uri.value}/DetailStory/get-chapter/${id}`);
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
         let data = await response.data;
         route.push(`view-story/${data.data[0].detailId}`);
     } catch (e) {
@@ -97,11 +78,7 @@ const findStory = async (sk) => {
     } else {
         try {
             let url = encodeURI.valueComponent(sk);
-<<<<<<< HEAD
             const response = await axios.get(`${uri.value}/api/Story/find-story/${url}`);
-=======
-            const response = await axios.get(`${uri.value}/Story/find-story/${url}`);
->>>>>>> 27ba1df5d2251642f5c96045b97b2bdd96517ab7
             dataFillter.value = await response.data;
         } catch (e) {
             console.log(e);
