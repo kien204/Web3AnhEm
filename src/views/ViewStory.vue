@@ -165,6 +165,8 @@ const fetchChapters = async (storyID) => {
         dataChapter.value = res.data.data;
         selectedChapter.value = parseInt(pa.params.id);
         nextOrback(selectedChapter.value, 0);
+
+        await axios.put(`${uri.value}/api/DetailStory/update-view/${storyID}`);
     } catch (e) {
         console.error('Lỗi khi lấy danh sách chương:', e);
     }

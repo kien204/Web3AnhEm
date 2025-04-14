@@ -20,22 +20,6 @@ const model = ref([
         ]
     },
     {
-        label: 'Quản lý trang',
-        icon: 'pi pi-fw pi-globe',
-        items: [
-            {
-                label: 'Quản lý Logo & Tên trang',
-                icon: 'pi pi-globe',
-                to: '/view/quanlychap'
-            },
-            {
-                label: 'Quản lý Quảng cáo',
-                icon: 'pi pi-megaphone',
-                to: '/view/quanlychap'
-            }
-        ]
-    },
-    {
         label: 'Quản lý thống kê',
         icon: 'pi pi-chart-bar',
         items: [

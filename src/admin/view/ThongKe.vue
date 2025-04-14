@@ -49,7 +49,7 @@ const data1 = computed(() => ({
         },
         {
             label: 'Lượt đọc',
-            data: listToptypeView.value.map((item) => item.viewCount),
+            data: listToptypeView.value.map((item) => item.totalViews),
             backgroundColor: '#EF5350'
         }
     ]
@@ -60,22 +60,12 @@ const data2 = computed(() => ({
     datasets: [
         {
             label: 'Lượt đọc',
-            data: listTopView.value.map((item) => item.viewCount),
+            data: listTopView.value.map((item) => item.totalViews),
             backgroundColor: '#EF5350'
         }
     ]
 }));
 
-const data3 = computed(() => ({
-    labels: listToptypeView.value.map((item) => item.genre),
-    datasets: [
-        {
-            label: 'Lượt đọc',
-            data: listToptypeView.value.map((item) => item.viewCount),
-            backgroundColor: '#EF5350'
-        }
-    ]
-}));
 
 const chartOptions = ref({
     responsive: true,
