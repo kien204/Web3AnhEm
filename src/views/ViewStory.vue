@@ -93,7 +93,7 @@ const dataChapter = ref([]);
 const selectedChapter = ref();
 const urlString = ref([]);
 const dataContent = ref('');
-const uri = ref('http://localhost');
+const uri = ref('http://10.10.33.29:5041');
 const vis = ref(false);
 
 const show = ref({
@@ -107,10 +107,44 @@ const payload = ref({
     ratting: 1
 });
 
+// Hàm lưu truyện vào localStorage (tự gọi API để lấy thông tin đầy đủ)
+const saveStoryToLocalStorage = async (storyId) => {
+    const maxItems = 20;
+    const currentTime = new Date().toLocaleString();
+    const visitedStories = JSON.parse(localStorage.getItem('visitedStories')) || [];
+
+    const isExist = visitedStories.some((item) => item.id == storyId);
+    if (!isExist) {
+        try {
+            const res = await axios.get(`${uri.value}/api/DetailStory/get-detailstory/${storyId}`);
+            const data = res.data.data;
+
+            const storyItem = {
+                id: storyId,
+                storyName: data?.sttName || 'Không rõ',
+                image: urlString.value[0] || 'https://via.placeholder.com/100x150?text=No+Image',
+                accessTime: currentTime
+            };
+
+            visitedStories.unshift(storyItem); // Thêm vào đầu danh sách
+
+            if (visitedStories.length > maxItems) {
+                visitedStories.pop(); // Xoá truyện cuối cùng
+            }
+
+            localStorage.setItem('visitedStories', JSON.stringify(visitedStories));
+        } catch (error) {
+            console.error('Lỗi khi lưu truyện vào localStorage:', error);
+        }
+    }
+};
+
+// Hiển thị thanh điều hướng trên cùng
 const showTopBar = () => {
     vis.value = true;
 };
 
+// Cuộn lên đầu trang
 const scrollToTop = () => {
     window.scrollTo({
         top: 0,
@@ -118,13 +152,15 @@ const scrollToTop = () => {
     });
 };
 
+// Ẩn thanh topBar khi cuộn
 window.addEventListener('scroll', () => {
     vis.value = false;
 });
 
+// Lấy danh sách chương của truyện
 const fetchChapters = async (storyID) => {
     try {
-        const res = await axios.get(`${uri.value}:5041/api/DetailStory/get-chapter/${storyID}`);
+        const res = await axios.get(`${uri.value}/api/DetailStory/get-chapter/${storyID}`);
         dataChapter.value = res.data.data;
         selectedChapter.value = parseInt(pa.params.id);
         nextOrback(selectedChapter.value, 0);
@@ -133,14 +169,21 @@ const fetchChapters = async (storyID) => {
     }
 };
 
+// Lấy nội dung truyện và lưu vào lịch sử
 const fetchStoryContent = async (id) => {
     try {
-        const res = await axios.get(`${uri.value}:5041/api/DetailStory/get-detailstory/${id}`);
-        if (res.data.data?.urlImg) {
-            urlString.value = res.data.data.urlImg.trim().split(',');
+        const res = await axios.get(`${uri.value}/api/DetailStory/get-detailstory/${id}`);
+        const storyData = res.data.data;
+
+        if (storyData?.urlImg) {
+            urlString.value = storyData.urlImg.trim().split(',');
         }
-        dataContent.value = res.data.data?.content || '';
-        fetchChapters(res.data.data.storyID);
+
+        dataContent.value = storyData?.content || '';
+        fetchChapters(storyData.storyID);
+
+        // Gọi hàm lưu vào lịch sử (hàm sẽ tự fetch thông tin chính xác)
+        await saveStoryToLocalStorage(id);
     } catch (e) {
         console.error('Lỗi khi lấy nội dung truyện:', e);
     }
@@ -149,7 +192,7 @@ const fetchStoryContent = async (id) => {
 const fetchComments = async (id) => {
     if (!id) return;
     try {
-        const res = await axios.get(`${uri.value}:5041/api/Comment/get-all-comment?id=${id}`);
+        const res = await axios.get(`${uri.value}/api/Comment/get-all-comment?id=${id}`);
         comments.value = res.data.data ?? [];
     } catch (e) {
         console.error('Lỗi khi lấy bình luận:', e);
@@ -164,7 +207,7 @@ const saveComment = async () => {
         return;
     }
     try {
-        let res = await axios.post(`${uri.value}:5041/api/Comment/insert-comment`, payload.value);
+        let res = await axios.post(`${uri.value}/api/Comment/insert-comment`, payload.value);
         if (res) {
             toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã thêm bình luận', life: 2000 });
         }

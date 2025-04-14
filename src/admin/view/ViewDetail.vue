@@ -28,7 +28,7 @@ console.log('Đang xem truyện với ID:', pa.params.id);
 
 const getAllDetail = async (id) => {
     try {
-        const res = await axios.get(`http://10.15.7.14:5041/api/DetailStory/get-detailstory/${id}`);
+        const res = await axios.get(`http://10.10.33.29:5041/api/DetailStory/get-detailstory/${id}`);
         dataAll.value = res.data;
         if (dataAll.value.data?.urlImg) {
             urlString.value = dataAll.value.data.urlImg.trim().split(',');

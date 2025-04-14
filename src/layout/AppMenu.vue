@@ -14,25 +14,7 @@ const model = ref([
             { label: 'Thể loại', icon: 'pi pi-list', to: '/uikit/formlayout' },
             { label: 'Hot', icon: 'pi pi-crown', to: '/uikit/input' },
             { label: 'Lịch sử', icon: 'pi pi-history', to: '/uikit/button', class: 'rotated-icon' },
-            { label: 'Yêu thích', icon: 'pi pi-heart', to: '/uikit/table', class: 'rotated-icon' }
-        ]
-    },
-    {
-        label: 'Tài khoản',
-        icon: 'pi pi-fw pi-briefcase',
-        to: '/pages',
-        items: [
-            {
-                label: 'Tài khoản',
-                icon: 'pi pi-fw pi-user',
-                items: [
-                    {
-                        label: 'Login',
-                        icon: 'pi pi-fw pi-sign-in',
-                        to: '/auth/login'
-                    }
-                ]
-            }
+            // { label: 'Yêu thích', icon: 'pi pi-heart', to: '/uikit/table', class: 'rotated-icon' }
         ]
     },
     {

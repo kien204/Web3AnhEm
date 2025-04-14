@@ -53,7 +53,7 @@ const params = ref();
 const story = ref({});
 const dataAll = ref([]);
 const checkMore = ref(false);
-const uri = ref('http://localhost');
+const uri = ref('http://10.10.33.29:5041');
 const formatDate = (dateStr) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateStr).toLocaleDateString(undefined, options);
@@ -65,7 +65,7 @@ const pushView = (id) => {
 
 const getAllDetail = async (id) => {
     try {
-        const response = await axios.get(`${uri.value}:5041/api/DetailStory/get-chapter/${id}`);
+        const response = await axios.get(`${uri.value}/api/DetailStory/get-chapter/${id}`);
         dataAll.value = await response.data;
     } catch (e) {
         console.log(e);

@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const toast = useToast();
 const token = JSON.parse(localStorage.getItem('token'));
-const url = 'http://10.15.7.14:5041/api';
+const url = 'http://10.10.33.29:5041/api';
 
 // Reactive variables
 const expandedRows = ref([]);
@@ -177,7 +177,7 @@ const editStory = async () => {
             storyAuthor: storyAuthorForm.value,
             typeDetailStory: typeDetailStoryForm.value.join(',') + ',' + AddTypeDetailStoryForm.value
         };
-        
+
         await axios.put(`${url}/Story/update-story`, updatedStory, { headers: { Authorization: `Bearer ${token}` } });
         await getAllStory();
         resetStoryForm();
