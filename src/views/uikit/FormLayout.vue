@@ -45,7 +45,7 @@ const route = useRouter();
 const allGenres = ref([]);
 const selectedGenres = ref([]);
 const filteredStories = ref([]);
-const url = ref('https://servertruyenv20250326151205-gdcffmapetcafcea.canadacentral-01.azurewebsites.net');
+const url = ref('http://10.10.33.29:5041');
 
 const fetchGenres = async () => {
     try {
