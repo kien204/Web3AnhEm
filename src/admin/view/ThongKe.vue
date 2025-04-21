@@ -7,7 +7,7 @@ import Chart from 'primevue/chart';
 import { computed } from 'vue';
 
 const toast = useToast();
-const url = 'http://10.10.33.29:5041/api';
+const url = 'http://localhost:5041/api';
 const listTotalType = ref([]);
 const listTopView = ref([]);
 const listToptypeView = ref([]);
@@ -65,7 +65,6 @@ const data2 = computed(() => ({
         }
     ]
 }));
-
 
 const chartOptions = ref({
     responsive: true,

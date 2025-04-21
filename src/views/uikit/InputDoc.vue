@@ -22,7 +22,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const uri = ref('http://10.10.33.29:5041'); // API URL
+const uri = ref('http://localhost:5041'); // API URL
 const hotStories = ref([]); // Danh sách truyện hot
 
 // Hàm lấy danh sách truyện hot từ API mới
@@ -31,7 +31,6 @@ const fetchHotStories = async () => {
         const res = await axios.get(`${uri.value}/api/Story/top-by-comments`);
         hotStories.value = res.data.data || [];
         console.log('Danh sách truyện hot:', hotStories.value);
-        
     } catch (error) {
         console.error('Lỗi khi lấy danh sách truyện hot:', error);
     }

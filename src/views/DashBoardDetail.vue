@@ -53,7 +53,7 @@ const params = ref();
 const story = ref({});
 const dataAll = ref([]);
 const checkMore = ref(false);
-const uri = ref('http://10.10.33.29:5041');
+const uri = ref('http://localhost:5041');
 const formatDate = (dateStr) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateStr).toLocaleDateString(undefined, options);

@@ -33,7 +33,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const uri = ref('http://10.10.33.29:5041'); // Cấu hình API
+const uri = ref('http://localhost:5041'); // Cấu hình API
 const historyData = ref([]); // Dữ liệu lịch sử đọc
 
 // Hàm lấy lịch sử đọc từ localStorage và gọi API để lấy thông tin chi tiết

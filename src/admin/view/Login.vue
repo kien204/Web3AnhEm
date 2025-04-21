@@ -19,7 +19,7 @@ const show = (check, statu, content) => {
 
 const login = async () => {
     try {
-        let res = await axios.post(`http://10.10.33.29:5041/api/Login/login`, {
+        let res = await axios.post(`http://localhost:5041/api/Login/login`, {
             userName: email.value,
             pass: password.value
         });

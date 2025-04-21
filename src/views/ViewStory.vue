@@ -94,7 +94,7 @@ const selectedChapter = ref();
 const urlString = ref([]);
 const dataContent = ref('');
 
-const uri = ref('http://10.10.33.29:5041');
+const uri = ref('http://localhost:5041');
 const vis = ref(false);
 
 const show = ref({
